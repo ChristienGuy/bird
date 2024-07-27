@@ -8,7 +8,6 @@ import {
 } from "./components/ui/Card";
 
 const UK_REGION_CODE = "GB";
-
 const EBIRD_BASE_API_URL = "https://api.ebird.org/v2";
 
 type RecentSightingsResponse = Array<{
