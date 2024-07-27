@@ -41,7 +41,7 @@ const getRecentSightings = async (
     }
   );
 
-  console.log(`fetching recent sightings for ${regionCode}`, response);
+  console.log(`fetching recent sightings for ${regionCode}`);
 
   return response.json();
 };
@@ -72,14 +72,13 @@ const getBirdImage = async (
     `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages|pageprops&format=json&piprop=thumbnail&titles=${speciesName}&pithumbsize=300&redirects`
   );
 
-  console.log(`fetching image for ${speciesName}`, response);
+  console.log(`fetching image for ${speciesName}`);
 
   return response.json();
 };
 
 async function BirdCard({ sighting }: { sighting: Sighting }) {
   const birdImage = await getBirdImage(sighting.comName);
-  console.log(birdImage);
 
   return (
     <Card>
@@ -99,6 +98,7 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
         />
         <p>Location: {sighting.locName}</p>
         <p>Observed: {sighting.obsDt}</p>
+        <p>Number of birds: {sighting.howMany}</p>
       </CardContent>
     </Card>
   );
@@ -108,6 +108,12 @@ export default async function Home() {
   const sightings = await getRecentSightings(UK_REGION_CODE);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1 className="text-4xl mb-12">
+        Recent bird sightings in the UK{" "}
+        <span role="img" aria-label="bird">
+          🐦
+        </span>
+      </h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {sightings.map((sighting) => (
           <BirdCard key={sighting.subId} sighting={sighting} />
