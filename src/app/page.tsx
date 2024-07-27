@@ -1,11 +1,3 @@
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@components/ui/Card";
 import Link from "next/link";
 
 export default async function Home() {

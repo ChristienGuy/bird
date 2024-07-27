@@ -36,17 +36,24 @@ const getRecentSightings = async (
   }
 
   const url = `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent`;
+
   const searchParams = new URLSearchParams({
     maxResults: "20",
   });
+
   const headers = new Headers();
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)"
+  );
+
   const response = await fetch(`${url}?${searchParams.toString()}`, {
     headers,
     redirect: "follow",
   });
 
-  console.log(`fetching recent sightings for ${regionCode}`);
+  // console.log(`fetching recent sightings for ${regionCode}`);
 
   return response.json();
 };
@@ -73,6 +80,8 @@ const getBirdImage = async (
     };
   };
 }> => {
+  const url = `https://en.wikipedia.org/w/api.php`;
+
   const params = new URLSearchParams({
     action: "query",
     prop: "pageimages|pageprops",
@@ -83,11 +92,14 @@ const getBirdImage = async (
     redirects: "",
   });
 
-  const url = `https://en.wikipedia.org/w/api.php?${params.toString()}`;
-  const response = await fetch(url, {
-    headers: {
-      "Api-User-Agent": "bird-sightings/0.1 (christien.guy@gmail.com)",
-    },
+  const headers = new Headers();
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)"
+  );
+
+  const response = await fetch(`${url}?${params.toString()}`, {
+    headers,
     next: {
       revalidate: 60 * 60 * 24, // 24 hours,
     },
@@ -150,8 +162,8 @@ export default async function RecentSightingsPage({
 }) {
   console.log("params", params);
 
-  const regionCode = params.regionCodeSlug.join("-");
-  const sightings = await getRecentSightings(regionCode.toUpperCase());
+  const regionCode = params.regionCodeSlug.join("-").toUpperCase();
+  const sightings = await getRecentSightings(regionCode);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="text-4xl mb-12">
