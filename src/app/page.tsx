@@ -67,17 +67,30 @@ const getBirdImage = async (
     };
   };
 }> => {
-  const response = await fetch(
-    `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages|pageprops&format=json&piprop=thumbnail&titles=${speciesName}&pithumbsize=300&redirects`
-  );
+  const params = new URLSearchParams({
+    action: "query",
+    prop: "pageimages|pageprops",
+    format: "json",
+    piprop: "thumbnail",
+    titles: speciesName,
+    pithumbsize: "500",
+    redirects: "",
+  });
 
-  console.log(`fetching image for ${speciesName}`);
+  const url = `https://en.wikipedia.org/w/api.php?${params.toString()}`;
+  const response = await fetch(url, {
+    headers: {
+      "Api-User-Agent": "bird-sightings/0.1 (christien.guy@gmail.com)",
+    },
+  });
+
+  console.log(`fetching image for ${speciesName}`, url);
 
   return response.json();
 };
 
 async function BirdCard({ sighting }: { sighting: Sighting }) {
-  const birdImage = await getBirdImage(sighting.comName);
+  const birdImage = await getBirdImage(sighting.sciName);
 
   const observationDate = new Date(sighting.obsDt);
 
