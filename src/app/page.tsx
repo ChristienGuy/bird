@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "./components/ui/Card";
 
-const UK_REGION_CODE = "GB";
+const UK_REGION_CODE = "GB-ENG-ESX";
 const EBIRD_BASE_API_URL = "https://api.ebird.org/v2";
 
 type RecentSightingsResponse = Array<{
@@ -31,14 +31,15 @@ type Sighting = RecentSightingsResponse[0];
 const getRecentSightings = async (
   regionCode: string
 ): Promise<RecentSightingsResponse> => {
-  const response = await fetch(
-    `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent`,
-    {
-      headers: {
-        "X-eBirdApiToken": process.env.EBIRD_API_TOKEN ?? "",
-      },
-    }
-  );
+  const url = `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent`;
+  const searchParams = new URLSearchParams({
+    maxResults: "20",
+  });
+  const response = await fetch(`${url}?${searchParams.toString()}`, {
+    headers: {
+      "X-eBirdApiToken": process.env.EBIRD_API_TOKEN ?? "",
+    },
+  });
 
   console.log(`fetching recent sightings for ${regionCode}`);
 
