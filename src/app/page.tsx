@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "./components/ui/Card";
 
-const UK_REGION_CODE = "GB-ENG-ESX";
+const EAST_SUSSEX_REGION_CODE = "GB-ENG-ESX";
 const EBIRD_BASE_API_URL = "https://api.ebird.org/v2";
 
 type RecentSightingsResponse = Array<{
@@ -31,14 +31,19 @@ type Sighting = RecentSightingsResponse[0];
 const getRecentSightings = async (
   regionCode: string
 ): Promise<RecentSightingsResponse> => {
+  if (!process.env.EBIRD_API_TOKEN) {
+    throw new Error("EBIRD_API_TOKEN is required");
+  }
+
   const url = `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent`;
   const searchParams = new URLSearchParams({
     maxResults: "20",
   });
+  const headers = new Headers();
+  headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
   const response = await fetch(`${url}?${searchParams.toString()}`, {
-    headers: {
-      "X-eBirdApiToken": process.env.EBIRD_API_TOKEN ?? "",
-    },
+    headers,
+    redirect: "follow",
   });
 
   console.log(`fetching recent sightings for ${regionCode}`);
@@ -83,6 +88,10 @@ const getBirdImage = async (
     headers: {
       "Api-User-Agent": "bird-sightings/0.1 (christien.guy@gmail.com)",
     },
+    cache: "force-cache",
+    next: {
+      revalidate: 60 * 60 * 24, // 24 hours,
+    },
   });
 
   console.log(`fetching image for ${speciesName}`, url);
@@ -113,15 +122,20 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
             fill
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <p>{sighting.locName}</p>
+        <div className="flex flex-col gap-2 pt-2">
+          <a
+            className="font-medium text-primary underline underline-offset-4"
+            href={`https://www.google.com/maps/@${sighting.lat},${sighting.lng},14z`}
+          >
+            {sighting.locName}
+          </a>
           <p>
             {new Intl.DateTimeFormat("en-GB", {
               dateStyle: "full",
               timeStyle: "short",
             }).format(observationDate)}
           </p>
-          <p>Number of birds: {sighting.howMany}</p>
+          {sighting.howMany && <p>Number of birds: {sighting.howMany}</p>}
         </div>
       </CardContent>
     </Card>
@@ -129,11 +143,11 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
 }
 
 export default async function Home() {
-  const sightings = await getRecentSightings(UK_REGION_CODE);
+  const sightings = await getRecentSightings(EAST_SUSSEX_REGION_CODE);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="text-4xl mb-12">
-        Recent bird sightings in the UK{" "}
+        Recent bird sightings in East Sussex{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
