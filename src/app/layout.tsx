@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Bird Sightings",
   description:
-    "Some bird sightings per region, powered by the Cornell Labs eBird aPI",
+    "Some bird sightings per region, powered by the Cornell Labs eBird API",
 };
 
 export default function RootLayout({

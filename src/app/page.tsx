@@ -80,6 +80,8 @@ const getBirdImage = async (
 async function BirdCard({ sighting }: { sighting: Sighting }) {
   const birdImage = await getBirdImage(sighting.comName);
 
+  const observationDate = new Date(sighting.obsDt);
+
   return (
     <Card>
       <CardHeader>
@@ -87,18 +89,27 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
         <CardDescription>{sighting.sciName}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Image
-          src={
-            birdImage.query.pages[Object.keys(birdImage.query.pages)[0]]
-              ?.thumbnail?.source
-          }
-          alt={sighting.comName}
-          width={300}
-          height={300}
-        />
-        <p>Location: {sighting.locName}</p>
-        <p>Observed: {sighting.obsDt}</p>
-        <p>Number of birds: {sighting.howMany}</p>
+        <div className="relative w-full h-72">
+          <Image
+            className="object-cover"
+            src={
+              birdImage.query.pages[Object.keys(birdImage.query.pages)[0]]
+                ?.thumbnail?.source
+            }
+            alt={sighting.comName}
+            fill
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p>{sighting.locName}</p>
+          <p>
+            {new Intl.DateTimeFormat("en-GB", {
+              dateStyle: "full",
+              timeStyle: "short",
+            }).format(observationDate)}
+          </p>
+          <p>Number of birds: {sighting.howMany}</p>
+        </div>
       </CardContent>
     </Card>
   );
@@ -107,14 +118,14 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
 export default async function Home() {
   const sightings = await getRecentSightings(UK_REGION_CODE);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="text-4xl mb-12">
         Recent bird sightings in the UK{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
       </h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {sightings.map((sighting) => (
           <BirdCard key={sighting.subId} sighting={sighting} />
         ))}
