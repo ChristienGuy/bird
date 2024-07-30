@@ -34,13 +34,19 @@ function findAllRegionsByQuery(query: string): Region[] | undefined {
     if (region.subnational1) {
       for (const sub1 of region.subnational1) {
         if (sub1.name.toLowerCase().includes(queryLower)) {
-          results.push({ name: sub1.name, code: sub1.code });
+          results.push({
+            name: `${sub1.name}, ${region.name}`,
+            code: sub1.code,
+          });
         }
 
         if (sub1.subnational2) {
           for (const sub2 of sub1.subnational2) {
             if (sub2.name.toLowerCase().includes(queryLower)) {
-              results.push({ name: sub2.name, code: sub2.code });
+              results.push({
+                name: `${sub2.name}, ${sub1.name}, ${region.name}`,
+                code: sub2.code,
+              });
             }
           }
         }
