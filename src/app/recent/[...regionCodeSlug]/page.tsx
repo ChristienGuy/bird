@@ -5,10 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@components/ui/Card";
-
-const EAST_SUSSEX_REGION_CODE = "GB-ENG-ESX";
-const EBIRD_BASE_API_URL = "https://api.ebird.org/v2";
+} from "@/components/ui/card";
+import { EBIRD_BASE_API_URL } from "@/constants";
 
 type RecentSightingsResponse = Array<{
   speciesCode: string;
@@ -32,7 +30,7 @@ const getRecentSightings = async (
   regionCode: string
 ): Promise<RecentSightingsResponse> => {
   if (!process.env.EBIRD_API_TOKEN) {
-    throw new Error("EBIRD_API_TOKEN is required");
+    throw new Error("Missing eBird API token");
   }
 
   const url = `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent`;
@@ -52,8 +50,6 @@ const getRecentSightings = async (
     headers,
     redirect: "follow",
   });
-
-  // console.log(`fetching recent sightings for ${regionCode}`);
 
   return response.json();
 };
@@ -104,8 +100,6 @@ const getBirdImage = async (
       revalidate: 60 * 60 * 24, // 24 hours,
     },
   });
-
-  // console.log(`fetching image for ${speciesName}`, url);
 
   return response.json();
 };
@@ -160,7 +154,8 @@ export default async function RecentSightingsPage({
     regionCodeSlug: string[];
   };
 }) {
-  console.log("params", params);
+  // TODO: make a function that finds a RegionCode by regionCodeSlug
+  // So that we can show the region name at the top of the page
 
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
