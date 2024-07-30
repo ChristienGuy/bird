@@ -19,10 +19,6 @@ export type RegionTree = Array<{
   }>;
 }>;
 
-// Search through the regionCodes array and subnational1 and subnational2 arrays
-// find where the region name includes the query
-// Add that region code to the result array
-// return the result array
 function findAllRegionsByQuery(query: string): Region[] | undefined {
   const queryLower = query.toLowerCase();
   const results: Region[] = [];
@@ -55,50 +51,6 @@ function findAllRegionsByQuery(query: string): Region[] | undefined {
   }
 
   return results;
-}
-
-// Recursively search through the regionCodes array
-// to find the region code where the query matches the region name
-function recursivelyFindRegionByQuery(
-  query: string,
-  list: RegionTree = regionCodes
-): Region | undefined {
-  const queryLower = query.toLowerCase();
-  for (const region of list) {
-    if (region.name.toLowerCase().includes(queryLower)) {
-      return { name: region.name, code: region.code };
-    }
-
-    if (region.subnational1) {
-      const subnational1RegionCode = recursivelyFindRegionByQuery(
-        queryLower,
-        region.subnational1
-      );
-      if (subnational1RegionCode) {
-        return subnational1RegionCode;
-      }
-
-      for (const sub1 of region.subnational1) {
-        if (sub1.subnational2) {
-          const subnational2RegionCode = recursivelyFindRegionByQuery(
-            queryLower,
-            sub1.subnational2
-          );
-          if (subnational2RegionCode) {
-            return subnational2RegionCode;
-          }
-        }
-      }
-    }
-  }
-}
-
-export async function findRegion(query: string): Promise<Region> {
-  const regionCode = recursivelyFindRegionByQuery(query);
-  if (!regionCode) {
-    throw new Error(`Could not find region code for ${query}`);
-  }
-  return regionCode;
 }
 
 export async function findAllRegions(query: string): Promise<Region[]> {
