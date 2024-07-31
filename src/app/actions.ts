@@ -21,6 +21,16 @@ export type RegionTree = Array<{
 
 function findAllRegionsByQuery(query: string): Region[] | undefined {
   const queryLower = query.toLowerCase();
+  // If we don't have a query return the first 10 regions
+  // This mimics "pagination" of the regions without actually needing to
+  // implement pagination
+  if (!query) {
+    return regionCodes.slice(0, 10).map((region) => ({
+      name: region.name,
+      code: region.code,
+    }));
+  }
+
   const results: Region[] = [];
   for (const region of regionCodes) {
     if (region.name.toLowerCase().includes(queryLower)) {
