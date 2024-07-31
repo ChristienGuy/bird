@@ -1,6 +1,7 @@
 "use server";
 
 import { regionCodes } from "@/regionCodes";
+import Fuse from "fuse.js";
 
 export type Region = {
   name: string;
@@ -19,19 +20,28 @@ export type RegionTree = Array<{
   }>;
 }>;
 
+const topLevelFuseOptions = {
+  includeScore: true,
+  keys: ["name"],
+};
+const fuse = new Fuse(regionCodes, topLevelFuseOptions);
+
 function findAllRegionsByQuery(query: string): Region[] | undefined {
   const queryLower = query.toLowerCase();
   const results: Region[] = [];
-  for (const region of regionCodes) {
-    if (region.name.toLowerCase().includes(queryLower)) {
-      results.push({ name: region.name, code: region.code });
-    }
 
-    if (region.subnational1) {
-      for (const sub1 of region.subnational1) {
+  for (const region of fuse.search(query)) {
+    // if (region.item.name.toLowerCase().includes(queryLower)) {
+    results.push({ name: region.item.name, code: region.item.code });
+    // }
+
+    if (region.item.subnational1) {
+      for (const sub1 of region.item.subnational1) {
+        // removing the if statement here means that any country that matches the query will return all of its sub1 items.
+
         if (sub1.name.toLowerCase().includes(queryLower)) {
           results.push({
-            name: `${sub1.name}, ${region.name}`,
+            name: `${sub1.name}, ${region.item.name}`,
             code: sub1.code,
           });
         }
@@ -40,7 +50,7 @@ function findAllRegionsByQuery(query: string): Region[] | undefined {
           for (const sub2 of sub1.subnational2) {
             if (sub2.name.toLowerCase().includes(queryLower)) {
               results.push({
-                name: `${sub2.name}, ${sub1.name}, ${region.name}`,
+                name: `${sub2.name}, ${sub1.name}, ${region.item.name}`,
                 code: sub2.code,
               });
             }
