@@ -1,17 +1,37 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { HamburgerMenuIcon, HomeIcon } from "@radix-ui/react-icons";
 import Link, { LinkProps } from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-function MobileLink({
-  onOpenChange,
-  ...props
-}: LinkProps & {
+type MobileLinkProps = LinkProps & {
   children: React.ReactNode;
+  className?: string;
   onOpenChange: (open: boolean) => void;
-}) {
-  return <Link onClick={() => onOpenChange(false)} {...props} />;
+};
+function MobileLink({ onOpenChange, className, ...props }: MobileLinkProps) {
+  const pathname = usePathname();
+  const isActive = pathname === props.href;
+  return (
+    <Link
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "flex w-full flex-row rounded px-4 py-2 aria-[current='page']:bg-gray-100",
+        className,
+      )}
+      onClick={() => onOpenChange(false)}
+      {...props}
+    />
+  );
 }
 
 function MobileNav() {
@@ -19,14 +39,18 @@ function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button>Menu</Button>
+        <Button size="icon" variant="ghost">
+          <HamburgerMenuIcon />
+          <span className="sr-only">menu</span>
+        </Button>
       </SheetTrigger>
-      <SheetContent>
-        <nav>
+      <SheetContent side="left">
+        <h2 className="text-xl font-bold">Birds</h2>
+        <nav className="mt-3">
           <ul>
             <li>
-              <MobileLink onOpenChange={setOpen} href="/">
-                Home
+              <MobileLink className="" onOpenChange={setOpen} href="/">
+                <HomeIcon /> Home
               </MobileLink>
             </li>
           </ul>
@@ -38,8 +62,11 @@ function MobileNav() {
 
 export function TopNav() {
   return (
-    <div className="flex flex-row p-2">
-      <MobileNav />
+    <div>
+      <div className="flex flex-row p-2">
+        <MobileNav />
+      </div>
+      <Separator />
     </div>
   );
 }
