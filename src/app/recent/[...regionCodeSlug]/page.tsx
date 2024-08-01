@@ -160,7 +160,7 @@ export default async function RecentSightingsPage({
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
+    <div className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="text-4xl mb-12">
         Recent bird sightings in East Sussex{" "}
         <span role="img" aria-label="bird">
@@ -172,6 +172,6 @@ export default async function RecentSightingsPage({
           <BirdCard key={sighting.subId} sighting={sighting} />
         ))}
       </div>
-    </main>
+    </div>
   );
 }

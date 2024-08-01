@@ -62,7 +62,7 @@ function MobileNav() {
 
 export function TopNav() {
   return (
-    <div>
+    <div className="sticky top-0 bg-white z-10">
       <div className="flex flex-row p-2">
         <MobileNav />
       </div>
