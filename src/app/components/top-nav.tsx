@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { HamburgerMenuIcon, HomeIcon } from "@radix-ui/react-icons";
+import { Bars3Icon, HomeIcon } from "@heroicons/react/20/solid";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -25,8 +25,8 @@ function MobileLink({ onOpenChange, className, ...props }: MobileLinkProps) {
     <Link
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex w-full flex-row rounded px-4 py-2 aria-[current='page']:bg-gray-100",
-        className,
+        "flex flex-row items-center w-full rounded px-4 py-2 aria-[current='page']:bg-gray-100",
+        className
       )}
       onClick={() => onOpenChange(false)}
       {...props}
@@ -40,7 +40,7 @@ function MobileNav() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button size="icon" variant="ghost">
-          <HamburgerMenuIcon />
+          <Bars3Icon className="size-5" />
           <span className="sr-only">menu</span>
         </Button>
       </SheetTrigger>
@@ -49,8 +49,8 @@ function MobileNav() {
         <nav className="mt-3">
           <ul>
             <li>
-              <MobileLink className="" onOpenChange={setOpen} href="/">
-                <HomeIcon /> Home
+              <MobileLink onOpenChange={setOpen} href="/">
+                <HomeIcon className="size-4 mr-2" /> Home
               </MobileLink>
             </li>
           </ul>
