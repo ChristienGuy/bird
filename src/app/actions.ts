@@ -1,6 +1,8 @@
 "use server";
 
 import { regionCodes } from "@/regionCodes";
+import speciesData from "../species.json";
+import Fuse from "fuse.js";
 
 export type Region = {
   name: string;
@@ -69,4 +71,27 @@ export async function findAllRegions(query: string): Promise<Region[]> {
     throw new Error(`Could not find any regions matching ${query}`);
   }
   return regions;
+}
+
+export type Species = {
+  sciName: string;
+  comName: string;
+  speciesCode: string;
+  category: string;
+  taxonOrder: number;
+  bandingCodes: string[];
+  comNameCodes: string[];
+  sciNameCodes: string[];
+  order: string;
+  familyCode: string;
+  familyComName: string;
+  familySciName: string;
+};
+export async function findSpecies(query: string) {
+  const fuse = new Fuse<Species>(speciesData["species"], {
+    keys: ["comName"],
+    ignoreLocation: true,
+  });
+
+  return fuse.search(query).slice(0, 10);
 }
