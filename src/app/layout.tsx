@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 function SidebarLink(
   props: LinkProps & {
     children: React.ReactNode;
-  }
+  },
 ) {
   return (
     <Button asChild>
@@ -48,9 +48,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main>
-          <div className="grid grid-cols-1 md:grid-cols-5 md:min-h-screen">
+          <div className="grid grid-cols-1 md:min-h-screen md:grid-cols-5">
             <Sidebar />
-            <div className="col-span-3 lg:col-span-4 lg:border-l p-8">
+            <div className="col-span-3 p-8 lg:col-span-4 lg:border-l">
               {children}
             </div>
           </div>
