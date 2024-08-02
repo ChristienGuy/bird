@@ -151,7 +151,7 @@ export async function getAllCountriesWithSubnationals(): Promise<
           };
         }),
       };
-    })
+    }),
   );
 
   return countriesWithSubnationals;
