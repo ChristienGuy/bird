@@ -1,6 +1,7 @@
 "use server";
 
-import { regionCodes } from "@/regionCodes";
+// import { regionCodes } from "@/regionCodes";
+import { flattenedRegionCodes } from "@/flattenedRegionCodes";
 import Fuse from "fuse.js";
 
 export type Region = {
@@ -20,11 +21,11 @@ export type RegionTree = Array<{
   }>;
 }>;
 
-const topLevelFuseOptions = {
+const fuseOptions = {
   includeScore: true,
   keys: ["name"],
 };
-const fuse = new Fuse(regionCodes, topLevelFuseOptions);
+const fuse = new Fuse(flattenedRegionCodes, fuseOptions);
 
 function findAllRegionsByQuery(query: string): Region[] | undefined {
   const queryLower = query.toLowerCase();
