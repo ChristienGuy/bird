@@ -20,6 +20,15 @@ export type RegionTree = Array<{
     }>;
   }>;
 }>;
+export type FlattenedRegion = {
+  code: string;
+  name: string;
+  type: string;
+  country: string;
+  subnational1: string | null;
+  subnational2: string | null;
+  fullHierarchyName: string;
+};
 
 const fuseOptions = {
   includeScore: true,
@@ -27,13 +36,21 @@ const fuseOptions = {
 };
 const fuse = new Fuse(flattenedRegionCodes, fuseOptions);
 
-function findAllRegionsByQuery(query: string): Region[] | undefined {
+function findAllRegionsByQuery(query: string): FlattenedRegion[] | undefined {
   const queryLower = query.toLowerCase();
-  const results: Region[] = [];
+  const results: FlattenedRegion[] = [];
 
   for (const region of fuse.search(query)) {
     // if (region.item.name.toLowerCase().includes(queryLower)) {
-    results.push({ name: region.item.name, code: region.item.code });
+    results.push({
+      code: region.item.code,
+      name: region.item.name,
+      type: region.item.country,
+      country: region.item.country,
+      subnational1: region.item.subnational1,
+      subnational2: region.item.subnational2,
+      fullHierarchyName: region.item.fullHierarchyName,
+    });
     // }
 
     if (region.item.subnational1) {
