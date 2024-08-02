@@ -15,7 +15,7 @@ async function getSpecies() {
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
   headers.append(
     "Api-User-Agent",
-    "bird-sightings/0.1 (christien.guy@gmail.com)"
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
   );
 
   const response = await fetch(url, {
