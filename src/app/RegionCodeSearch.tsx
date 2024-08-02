@@ -11,7 +11,7 @@ export function RegionCodeSearch() {
   "use client";
   const [searchQuery, setSearchQuery] = useState("");
   const [allMatchingRegions, setAllMatchingRegions] = useState<Array<Region>>(
-    []
+    [],
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

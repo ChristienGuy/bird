@@ -27,7 +27,7 @@ type RecentSightingsResponse = Array<{
 type Sighting = RecentSightingsResponse[0];
 
 const getRecentSightings = async (
-  regionCode: string
+  regionCode: string,
 ): Promise<RecentSightingsResponse> => {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
@@ -43,7 +43,7 @@ const getRecentSightings = async (
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
   headers.append(
     "Api-User-Agent",
-    "bird-sightings/0.1 (christien.guy@gmail.com)"
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
   );
 
   const response = await fetch(`${url}?${searchParams.toString()}`, {
@@ -55,7 +55,7 @@ const getRecentSightings = async (
 };
 
 const getBirdImage = async (
-  speciesName: string
+  speciesName: string,
 ): Promise<{
   query: {
     pages: {
@@ -91,7 +91,7 @@ const getBirdImage = async (
   const headers = new Headers();
   headers.append(
     "Api-User-Agent",
-    "bird-sightings/0.1 (christien.guy@gmail.com)"
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
   );
 
   const response = await fetch(`${url}?${params.toString()}`, {
@@ -115,7 +115,7 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
         <CardDescription>{sighting.sciName}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="relative w-full h-72">
+        <div className="relative h-72 w-full">
           <Image
             className="object-cover"
             src={
@@ -161,13 +161,13 @@ export default async function RecentSightingsPage({
   const sightings = await getRecentSightings(regionCode);
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
-      <h1 className="text-4xl mb-12">
+      <h1 className="mb-12 text-4xl">
         Recent bird sightings in East Sussex{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {sightings.map((sighting) => (
           <BirdCard key={sighting.subId} sighting={sighting} />
         ))}
