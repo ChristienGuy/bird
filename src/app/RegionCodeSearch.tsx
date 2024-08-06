@@ -12,14 +12,14 @@ import { FlattenedRegion } from "./actions";
 export function RegionCodeSearch() {
   "use client";
   const [searchQuery, setSearchQuery] = useState("");
-  const [fuseSearchResults, setFuseSearchResults] = useState<
+  const [regionSearchResults, setRegionSearchResults] = useState<
     FuseResult<FlattenedRegion>[]
   >([]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const fuseSearchMatches = await findMatchingRegions(searchQuery);
-    setFuseSearchResults(fuseSearchMatches);
+    setRegionSearchResults(fuseSearchMatches);
   };
 
   return (
@@ -36,20 +36,20 @@ export function RegionCodeSearch() {
         />
         <Button type="submit">Search for Region</Button>
       </form>
-      {fuseSearchResults.length > 0 &&
-        fuseSearchResults.map((region) => {
-          const regionPath = region.item.code
+      {regionSearchResults.length > 0 &&
+        regionSearchResults.map((result) => {
+          const regionPath = result.item.code
             .toLowerCase()
             .split("-")
             .join("/");
           return (
             <Link
-              key={region.item.code}
+              key={result.item.code}
               // TODO: abstract this into an Anchor component to share styles
               className="font-medium text-primary underline underline-offset-2"
               href={`/recent/${regionPath}`}
             >
-              View recent sightings in {region.item.fullHierarchyName}
+              View recent sightings in {result.item.fullHierarchyName}
             </Link>
           );
         })}
