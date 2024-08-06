@@ -18,8 +18,8 @@ export function RegionCodeSearch() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const fuseSearchMatches = await findMatchingRegions(searchQuery);
-    setRegionSearchResults(fuseSearchMatches);
+    const searchMatches = await findMatchingRegions(searchQuery);
+    setRegionSearchResults(searchMatches);
   };
 
   return (
