@@ -24,4 +24,4 @@ You will need an eBird API Token stored in a `.env.local` file (you can get this
 
 ## Learn More
 
-- Styled using [shadcn/ui](https://ui.shadcn.com/)
+- Styled using [shadcn/ui](https://ui.shadcn.com/) and [Radix](https://www.radix-ui.com/primitives/docs/overview/introduction)
