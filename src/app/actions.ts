@@ -1,7 +1,7 @@
 "use server";
 
 // import { regionCodes } from "@/regionCodes";
-import { flattenedRegionCodes } from "@/flattenedRegionCodes";
+import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 
 export type Region = {
