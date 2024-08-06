@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { findAllRegions, Region } from "./actions";
+import { findMatchingRegions } from "./actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,14 +12,14 @@ import { FlattenedRegion } from "./actions";
 export function RegionCodeSearch() {
   "use client";
   const [searchQuery, setSearchQuery] = useState("");
-  const [allMatchingRegions, setAllMatchingRegions] = useState<
+  const [fuseSearchResults, setFuseSearchResults] = useState<
     FuseResult<FlattenedRegion>[]
   >([]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const regions = await findAllRegions(searchQuery);
-    setAllMatchingRegions(regions);
+    const fuseSearchMatches = await findMatchingRegions(searchQuery);
+    setFuseSearchResults(fuseSearchMatches);
   };
 
   return (
@@ -36,8 +36,8 @@ export function RegionCodeSearch() {
         />
         <Button type="submit">Search for Region</Button>
       </form>
-      {allMatchingRegions.length > 0 &&
-        allMatchingRegions.map((region) => {
+      {fuseSearchResults.length > 0 &&
+        fuseSearchResults.map((region) => {
           const regionPath = region.item.code
             .toLowerCase()
             .split("-")

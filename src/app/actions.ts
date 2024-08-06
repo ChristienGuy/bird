@@ -1,6 +1,5 @@
 "use server";
 
-// import { regionCodes } from "@/regionCodes";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 
@@ -20,6 +19,7 @@ export type RegionTree = Array<{
     }>;
   }>;
 }>;
+
 export type FlattenedRegion = {
   code: string;
   name: string;
@@ -36,7 +36,7 @@ const fuseOptions = {
 };
 const fuse = new Fuse<FlattenedRegion>(flattenedRegionCodes, fuseOptions);
 
-export async function findAllRegions(query: string) {
+export async function findMatchingRegions(query: string) {
   const regions = fuse.search(query);
   if (!regions || regions.length === 0) {
     throw new Error(`Could not find any regions matching ${query}`);
