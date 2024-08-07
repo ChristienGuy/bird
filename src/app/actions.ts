@@ -2,7 +2,7 @@
 
 import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
-import Fuse from "fuse.js";
+import Fuse, { FuseResult } from "fuse.js";
 
 export type Region = {
   name: string;
@@ -51,10 +51,12 @@ export type Species = {
   familySciName: string;
 };
 
+export type SpeciesGetResponse = FuseResult<Species>[];
+
 const speciesFuseIndex = new Fuse<Species>(speciesData as readonly Species[], {
   keys: ["comName"],
   ignoreLocation: true,
 });
-export async function findSpecies(query: string) {
+export async function findSpecies(query: string): Promise<SpeciesGetResponse> {
   return speciesFuseIndex.search(query).slice(0, 10);
 }

@@ -1,14 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { Bars3Icon, HomeIcon } from "@heroicons/react/20/solid";
+import {
+  Bars3Icon,
+  HomeIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/20/solid";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -25,8 +24,8 @@ function MobileLink({ onOpenChange, className, ...props }: MobileLinkProps) {
     <Link
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex flex-row items-center w-full rounded px-4 py-2 aria-[current='page']:bg-gray-100",
-        className
+        "flex w-full flex-row items-center rounded px-4 py-2 aria-[current='page']:bg-gray-100",
+        className,
       )}
       onClick={() => onOpenChange(false)}
       {...props}
@@ -50,7 +49,12 @@ function MobileNav() {
           <ul>
             <li>
               <MobileLink onOpenChange={setOpen} href="/">
-                <HomeIcon className="size-4 mr-2" /> Home
+                <HomeIcon className="mr-2 size-4" /> Home
+              </MobileLink>
+            </li>
+            <li>
+              <MobileLink onOpenChange={setOpen} href="/species">
+                <MagnifyingGlassIcon className="mr-2 size-4" /> Species
               </MobileLink>
             </li>
           </ul>
@@ -62,7 +66,7 @@ function MobileNav() {
 
 export function TopNav() {
   return (
-    <div className="sticky top-0 bg-white z-10">
+    <div className="sticky top-0 z-10 bg-white">
       <div className="flex flex-row p-2">
         <MobileNav />
       </div>

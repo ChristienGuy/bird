@@ -1,51 +1,43 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { findSpecies, Species } from "../actions";
+import { findSpecies, SpeciesGetResponse } from "../actions";
 import { useState } from "react";
-import { FuseResult } from "fuse.js";
-
-async function getSpecies() {
-  if (!process.env.EBIRD_API_TOKEN) {
-    throw new Error("Missing eBird API token");
-  }
-
-  const url = `https://api.ebird.org/v2/ref/taxonomy/ebird?fmt=json`;
-
-  const headers = new Headers();
-  headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
-  headers.append(
-    "Api-User-Agent",
-    "bird-sightings/0.1 (christien.guy@gmail.com)",
-  );
-
-  const response = await fetch(url, {
-    headers,
-  });
-
-  return response.json();
-}
+import { Badge } from "@/components/ui/badge";
 
 export default function SpeciesPage() {
-  const [species, setSpecies] = useState<FuseResult<Species>[]>([]);
+  const [speciesSearchResponse, setSpeciesSearchResponse] =
+    useState<SpeciesGetResponse>([]);
 
   const handleSearch = async (query: string) => {
     const species = await findSpecies(query);
-    setSpecies(species);
+    setSpeciesSearchResponse(species);
   };
   return (
     <div>
       <h1>Species</h1>
-      <form>
+      <form className="mb-4">
         <Input
+          className="shadow-sm"
           placeholder="Search for a species"
           onChange={(event) => {
             handleSearch(event.target.value);
           }}
         />
       </form>
-      <code>
-        <pre>{JSON.stringify(species, null, 2)}</pre>
-      </code>
+      <ul className="flex flex-col gap-2">
+        {speciesSearchResponse.map(({ item: species }) => (
+          <li
+            className="flex w-full flex-col gap-2 rounded-lg border p-4"
+            key={species.speciesCode}
+          >
+            <h2 className="font-semibold">{species.comName}</h2>
+            <p className="text-sm text-gray-500">{species.sciName}</p>
+            <div>
+              <Badge variant="outline">{species.familyComName}</Badge>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
