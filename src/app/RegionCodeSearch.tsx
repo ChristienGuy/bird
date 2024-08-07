@@ -47,7 +47,10 @@ export function RegionCodeSearch() {
               key={result.item.code}
               // TODO: abstract this into an Anchor component to share styles
               className="font-medium text-primary underline underline-offset-2"
-              href={`/recent/${regionPath}`}
+              href={{
+                pathname: `/recent/${regionPath}`,
+                query: { name: `${result.item.name}` },
+              }}
             >
               View recent sightings in {result.item.fullHierarchyName}
             </Link>

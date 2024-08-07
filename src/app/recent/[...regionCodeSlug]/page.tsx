@@ -149,20 +149,21 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
 
 export default async function RecentSightingsPage({
   params,
+  searchParams,
 }: {
   params: {
     regionCodeSlug: string[];
   };
+  searchParams: { name: string };
 }) {
   // TODO: make a function that finds a RegionCode by regionCodeSlug
   // So that we can show the region name at the top of the page
-
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings in East Sussex{" "}
+        Recent bird sightings in {searchParams.name}{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
