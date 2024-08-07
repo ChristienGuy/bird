@@ -1,76 +1,39 @@
 "use server";
 
-import { regionCodes } from "@/regionCodes";
-import speciesData from "../species.json";
+import speciesData from "@/species.json";
+import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 
 export type Region = {
   name: string;
   code: string;
 };
-export type RegionTree = Array<{
+
+export type FlattenedRegion = {
   code: string;
   name: string;
-  subnational1?: Array<{
-    code: string;
-    name: string;
-    subnational2?: Array<{
-      code: string;
-      name: string;
-    }>;
-  }>;
-}>;
+  type: string;
+  country: string;
+  subnational1: string | null;
+  subnational2: string | null;
+  fullHierarchyName: string;
+};
 
-function findAllRegionsByQuery(query: string): Region[] | undefined {
-  const queryLower = query.toLowerCase();
-  // If we don't have a query return the first 10 regions
-  // This mimics "pagination" of the regions without actually needing to
-  // implement pagination
-  if (!query) {
-    return regionCodes.slice(0, 10).map((region) => ({
-      name: region.name,
-      code: region.code,
-    }));
-  }
+const fuseOptions = {
+  includeScore: true,
+  keys: ["name"],
+};
+const regionsFuseIndex = new Fuse<FlattenedRegion>(
+  flattenedRegionCodes,
+  fuseOptions,
+);
 
-  const results: Region[] = [];
-  for (const region of regionCodes) {
-    if (region.name.toLowerCase().includes(queryLower)) {
-      results.push({ name: region.name, code: region.code });
-    }
-
-    if (region.subnational1) {
-      for (const sub1 of region.subnational1) {
-        if (sub1.name.toLowerCase().includes(queryLower)) {
-          results.push({
-            name: `${sub1.name}, ${region.name}`,
-            code: sub1.code,
-          });
-        }
-
-        if (sub1.subnational2) {
-          for (const sub2 of sub1.subnational2) {
-            if (sub2.name.toLowerCase().includes(queryLower)) {
-              results.push({
-                name: `${sub2.name}, ${sub1.name}, ${region.name}`,
-                code: sub2.code,
-              });
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return results;
-}
-
-export async function findAllRegions(query: string): Promise<Region[]> {
-  const regions = findAllRegionsByQuery(query);
+export async function findMatchingRegions(query: string) {
+  const regions = regionsFuseIndex.search(query);
   if (!regions || regions.length === 0) {
     throw new Error(`Could not find any regions matching ${query}`);
   }
-  return regions;
+  return regions.slice(0, 10);
 }
 
 export type Species = {
@@ -87,11 +50,11 @@ export type Species = {
   familyComName: string;
   familySciName: string;
 };
-export async function findSpecies(query: string) {
-  const fuse = new Fuse<Species>(speciesData["species"], {
-    keys: ["comName"],
-    ignoreLocation: true,
-  });
 
-  return fuse.search(query).slice(0, 10);
+const speciesFuseIndex = new Fuse<Species>(speciesData, {
+  keys: ["comName"],
+  ignoreLocation: true,
+});
+export async function findSpecies(query: string) {
+  return speciesFuseIndex.search(query).slice(0, 10);
 }
