@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Card,
@@ -7,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EBIRD_BASE_API_URL } from "@/constants";
+import { useSearchParams } from "next/navigation";
 
 type RecentSightingsResponse = Array<{
   speciesCode: string;
@@ -157,12 +160,14 @@ export default async function RecentSightingsPage({
   // TODO: make a function that finds a RegionCode by regionCodeSlug
   // So that we can show the region name at the top of the page
 
+  const searchParams = useSearchParams();
+  const regionName = searchParams.get("name") || "this region.";
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings in East Sussex{" "}
+        Recent bird sightings in {regionName}{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
