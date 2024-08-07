@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { RegionCodeSearch } from "./RegionCodeSearch";
 
 export default async function Home() {
