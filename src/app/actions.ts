@@ -51,7 +51,9 @@ export type Species = {
   familySciName: string;
 };
 
-export type SpeciesGetResponse = FuseResult<Species>[];
+export type SpeciesGetResponse = Array<{
+  item: Species;
+}>;
 
 const speciesFuseIndex = new Fuse<Species>(speciesData as readonly Species[], {
   keys: ["comName"],
