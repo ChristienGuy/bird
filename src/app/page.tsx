@@ -6,7 +6,7 @@ export default async function Home() {
   return (
     <>
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings by region
+        Recent bird sightings by region{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
