@@ -7,6 +7,7 @@ import {
   Bars3Icon,
   HomeIcon,
   MagnifyingGlassIcon,
+  MapIcon,
 } from "@heroicons/react/20/solid";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,6 +56,11 @@ function MobileNav() {
             <li>
               <MobileLink onOpenChange={setOpen} href="/species">
                 <MagnifyingGlassIcon className="mr-2 size-4" /> Species
+              </MobileLink>
+            </li>
+            <li>
+              <MobileLink onOpenChange={setOpen} href="/nearby-sightings">
+                <MapIcon className="mr-2 size-4" /> Nearby Sightings
               </MobileLink>
             </li>
           </ul>
