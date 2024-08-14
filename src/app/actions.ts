@@ -18,12 +18,17 @@ export type Region = {
 };
 
 export async function getRegion(regionCode: string) {
+  // We're reassigning the imported flattenedRegionCodes to a new variable
+  // here exclusively so that we can cast it to a Region[] type and get
+  // good type checking in the rest of the function.
   const regions = flattenedRegionCodes as Region[];
 
-  const region = regions.find((r) => r.code === regionCode);
+  const region = regions.find((region) => region.code === regionCode);
+
   if (!region) {
     throw new Error(`Could not find region with code ${regionCode}`);
   }
+
   return region;
 }
 
