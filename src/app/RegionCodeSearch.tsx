@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { findMatchingRegions, RegionGetResponse } from "./actions";
+import { findRegions, FindRegionsResponse } from "./actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,12 +11,12 @@ export function RegionCodeSearch() {
   "use client";
   const [searchQuery, setSearchQuery] = useState("");
   const [regionSearchResults, setRegionSearchResults] = useState<
-    RegionGetResponse[]
+    FindRegionsResponse[]
   >([]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const searchMatches = await findMatchingRegions(searchQuery);
+    const searchMatches = await findRegions(searchQuery);
     setRegionSearchResults(searchMatches);
   };
 
@@ -47,7 +47,6 @@ export function RegionCodeSearch() {
               className="font-medium text-primary underline underline-offset-2"
               href={{
                 pathname: `/recent/${regionPath}`,
-                query: { name: `${result.item.name}` },
               }}
             >
               View recent sightings in {result.item.fullHierarchyName}

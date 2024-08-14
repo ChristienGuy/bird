@@ -5,16 +5,8 @@ import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 
 /*
- * REGION SEARCH ACTIONS
+ * REGION ACTIONS
  */
-export async function getRegion(regionCode: string): Promise<Region> {
-  const region = flattenedRegionCodes.find((r) => r.code === regionCode);
-  if (!region) {
-    throw new Error(`Could not find region with code ${regionCode}`);
-  }
-  return region;
-}
-
 export type Region = {
   code: string;
   name: string;
@@ -25,7 +17,17 @@ export type Region = {
   fullHierarchyName: string;
 };
 
-export type RegionGetResponse = {
+export async function getRegion(regionCode: string) {
+  const regions = flattenedRegionCodes as Region[];
+
+  const region = regions.find((r) => r.code === regionCode);
+  if (!region) {
+    throw new Error(`Could not find region with code ${regionCode}`);
+  }
+  return region;
+}
+
+export type FindRegionsResponse = {
   item: Region;
 };
 
@@ -34,9 +36,9 @@ const regionsFuseIndex = new Fuse<Region>(flattenedRegionCodes, {
   keys: ["name"],
 });
 
-export async function findMatchingRegions(
+export async function findRegions(
   query: string,
-): Promise<RegionGetResponse[]> {
+): Promise<FindRegionsResponse[]> {
   const regions = regionsFuseIndex.search(query);
   if (!regions || regions.length === 0) {
     throw new Error(`Could not find any regions matching ${query}`);
