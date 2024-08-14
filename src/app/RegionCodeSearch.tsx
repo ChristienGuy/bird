@@ -1,19 +1,17 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { findMatchingRegions } from "./actions";
+import { findMatchingRegions, RegionGetResponse } from "./actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FuseResult } from "fuse.js";
-import { FlattenedRegion } from "./actions";
 
 export function RegionCodeSearch() {
   "use client";
   const [searchQuery, setSearchQuery] = useState("");
   const [regionSearchResults, setRegionSearchResults] = useState<
-    FuseResult<FlattenedRegion>[]
+    RegionGetResponse[]
   >([]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

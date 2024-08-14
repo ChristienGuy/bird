@@ -26,9 +26,9 @@ type RecentSightingsResponse = Array<{
 
 type Sighting = RecentSightingsResponse[0];
 
-const getRecentSightings = async (
+async function getRecentSightings(
   regionCode: string,
-): Promise<RecentSightingsResponse> => {
+): Promise<RecentSightingsResponse> {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -52,11 +52,9 @@ const getRecentSightings = async (
   });
 
   return response.json();
-};
+}
 
-const getBirdImage = async (
-  speciesName: string,
-): Promise<{
+async function getBirdImage(speciesName: string): Promise<{
   query: {
     pages: {
       [key: string]: {
@@ -75,7 +73,7 @@ const getBirdImage = async (
       };
     };
   };
-}> => {
+}> {
   const url = `https://en.wikipedia.org/w/api.php`;
 
   const params = new URLSearchParams({
@@ -102,8 +100,7 @@ const getBirdImage = async (
   });
 
   return response.json();
-};
-
+}
 async function BirdCard({ sighting }: { sighting: Sighting }) {
   const birdImage = await getBirdImage(sighting.sciName);
   const observationDate = new Date(sighting.obsDt);
