@@ -59,8 +59,8 @@ function MobileNav() {
               </MobileLink>
             </li>
             <li>
-              <MobileLink onOpenChange={setOpen} href="/nearby-sightings">
-                <MapIcon className="mr-2 size-4" /> Nearby Sightings
+              <MobileLink onOpenChange={setOpen} href="/recent/nearby">
+                <MapIcon className="mr-2 size-4" /> Nearby
               </MobileLink>
             </li>
           </ul>
