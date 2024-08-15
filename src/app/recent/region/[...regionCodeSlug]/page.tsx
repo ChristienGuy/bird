@@ -2,6 +2,7 @@ import { EBIRD_BASE_API_URL } from "@/constants";
 import { Map } from "@/app/components/map";
 import { ViewController } from "./view-controller";
 import { CardView } from "./card-view";
+import { MapView } from "./map-view";
 
 export type Sighting = {
   speciesCode: string;
@@ -72,7 +73,7 @@ export default async function RecentSightingsPage({
       </h1>
       <ViewController
         cardView={<CardView sightings={sightings} />}
-        mapView={<Map />}
+        mapView={<MapView sightings={sightings} />}
       />
     </div>
   );
