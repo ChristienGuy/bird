@@ -40,9 +40,5 @@ export default function MapComponent() {
     }
   }, []);
 
-  return (
-    <div ref={mapContainer} className="mt-4 h-[34em] w-full">
-      {" "}
-    </div>
-  );
+  return <div ref={mapContainer} className="mt-4 h-[34em] w-full"></div>;
 }
