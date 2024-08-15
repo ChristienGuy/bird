@@ -61,6 +61,7 @@ export default function MapComponent({
     markersRef.current.forEach((marker) => {
       marker.remove();
     });
+    markersRef.current = [];
     if (mapRef.current) {
       nearbySightings?.forEach((sightingsData) => {
         const marker = new mapboxgl.Marker().setLngLat([
