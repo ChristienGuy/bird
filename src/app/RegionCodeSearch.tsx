@@ -48,7 +48,7 @@ export function RegionCodeSearch() {
               // TODO: abstract this into an Anchor component to share styles
               className="font-medium text-primary underline underline-offset-2"
               href={{
-                pathname: `/recent/${regionPath}`,
+                pathname: `/recent/region/${regionPath}`,
                 query: { name: `${result.item.name}` },
               }}
             >
