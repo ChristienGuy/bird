@@ -1,12 +1,11 @@
-import { Region } from "./app/actions";
 import { EBIRD_BASE_API_URL } from "./constants";
 
-const getCountries = async (): Promise<
-  Array<{
-    name: string;
-    code: string;
-  }>
-> => {
+type SimpleRegion = {
+  name: string;
+  code: string;
+};
+
+const getCountries = async (): Promise<Array<SimpleRegion>> => {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -23,12 +22,7 @@ const getCountries = async (): Promise<
   return response.json();
 };
 
-async function getSubnational1(region: string): Promise<
-  Array<{
-    name: string;
-    code: string;
-  }>
-> {
+async function getSubnational1(region: string): Promise<Array<SimpleRegion>> {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -45,12 +39,7 @@ async function getSubnational1(region: string): Promise<
   return response.json();
 }
 
-async function getSubNational2(region: string): Promise<
-  Array<{
-    name: string;
-    code: string;
-  }>
-> {
+async function getSubNational2(region: string): Promise<Array<SimpleRegion>> {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -66,7 +55,17 @@ async function getSubNational2(region: string): Promise<
   return response.json();
 }
 
-export async function getNestedRegionsData(): Promise<Array<Region>> {
+export async function getNestedRegionsData(): Promise<
+  Array<
+    SimpleRegion & {
+      subnational1: Array<
+        SimpleRegion & {
+          subnational2: Array<SimpleRegion>;
+        }
+      >;
+    }
+  >
+> {
   const countries = await getCountries();
   const countriesWithSubnationals = await Promise.all(
     countries.map(async (country) => {
