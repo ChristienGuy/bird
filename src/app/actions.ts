@@ -2,7 +2,7 @@
 
 import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
-import Fuse, { FuseResult } from "fuse.js";
+import Fuse from "fuse.js";
 
 export type Region = {
   name: string;
