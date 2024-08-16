@@ -71,10 +71,6 @@ export async function getNearbySightings(longitude: number, latitude: number) {
 
   const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent?lat=${latitude}&lng=${longitude}`;
 
-  const searchParams = new URLSearchParams({
-    maxResults: "20",
-  });
-
   const headers = new Headers();
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
   headers.append(

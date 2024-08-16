@@ -68,6 +68,11 @@ export default function MapComponent({
       marker.remove();
     });
     markersRef.current = [];
+
+    if (!mapRef.current) {
+      return;
+    }
+
     if (mapRef.current) {
       nearbySightings?.forEach((sightingsData) => {
         const popup = new mapboxgl.Popup({ offset: 25 })
@@ -78,9 +83,7 @@ export default function MapComponent({
           .setLngLat([sightingsData.lng, sightingsData.lat])
           .setPopup(popup);
         if (mapRef.current) {
-          {
-            marker.addTo(mapRef.current);
-          }
+          marker.addTo(mapRef.current);
         }
         markersRef.current.push(marker);
       });
