@@ -46,11 +46,16 @@ export default function MapComponent({
         }),
       );
 
-      map.on("dragend", () => {
-        // TODO: Only works with user input. Does not work with geolocate, add that in too.
+      const handleMoveEvents = () => {
         const longitude = map.getCenter().lng;
         const latitude = map.getCenter().lat;
         onDragEnd(longitude, latitude);
+      };
+      map.on("dragend", () => {
+        handleMoveEvents();
+      });
+      map.on("moveend", () => {
+        handleMoveEvents();
       });
 
       return () => map.remove();
@@ -64,10 +69,13 @@ export default function MapComponent({
     markersRef.current = [];
     if (mapRef.current) {
       nearbySightings?.forEach((sightingsData) => {
-        const marker = new mapboxgl.Marker().setLngLat([
-          sightingsData.lng,
-          sightingsData.lat,
-        ]);
+        const popup = new mapboxgl.Popup({ offset: 25 })
+          .setHTML(`<h3>${sightingsData.comName}</h3>
+          <p>${sightingsData.locName}</p>
+          <p>${sightingsData.howMany} Sighted</p>`);
+        const marker = new mapboxgl.Marker()
+          .setLngLat([sightingsData.lng, sightingsData.lat])
+          .setPopup(popup);
         if (mapRef.current) {
           {
             marker.addTo(mapRef.current);
