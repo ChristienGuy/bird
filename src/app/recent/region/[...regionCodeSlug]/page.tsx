@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EBIRD_BASE_API_URL } from "@/constants";
+import { getRegion } from "@/app/actions";
 
 type RecentSightingsResponse = Array<{
   speciesCode: string;
@@ -26,9 +27,9 @@ type RecentSightingsResponse = Array<{
 
 type Sighting = RecentSightingsResponse[0];
 
-const getRecentSightings = async (
+async function getRecentSightings(
   regionCode: string,
-): Promise<RecentSightingsResponse> => {
+): Promise<RecentSightingsResponse> {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -52,11 +53,9 @@ const getRecentSightings = async (
   });
 
   return response.json();
-};
+}
 
-const getBirdImage = async (
-  speciesName: string,
-): Promise<{
+async function getBirdImage(speciesName: string): Promise<{
   query: {
     pages: {
       [key: string]: {
@@ -75,7 +74,7 @@ const getBirdImage = async (
       };
     };
   };
-}> => {
+}> {
   const url = `https://en.wikipedia.org/w/api.php`;
 
   const params = new URLSearchParams({
@@ -102,8 +101,7 @@ const getBirdImage = async (
   });
 
   return response.json();
-};
-
+}
 async function BirdCard({ sighting }: { sighting: Sighting }) {
   const birdImage = await getBirdImage(sighting.sciName);
   const observationDate = new Date(sighting.obsDt);
@@ -149,21 +147,21 @@ async function BirdCard({ sighting }: { sighting: Sighting }) {
 
 export default async function RecentSightingsPage({
   params,
-  searchParams,
 }: {
   params: {
     regionCodeSlug: string[];
   };
-  searchParams: { name: string };
 }) {
   // TODO: make a function that finds a RegionCode by regionCodeSlug
   // So that we can show the region name at the top of the page
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
+  const region = await getRegion(regionCode);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings in {searchParams.name}{" "}
+        Recent bird sightings in {region.name}{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
