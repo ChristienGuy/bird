@@ -37,24 +37,25 @@ export default function MapComponent({
 
       map.addControl(new mapboxgl.NavigationControl(), "top-left");
 
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: true,
-        }),
-      );
+      let geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      });
+
+      map.addControl(geolocate);
 
       const handleMoveEvents = () => {
         const longitude = map.getCenter().lng;
         const latitude = map.getCenter().lat;
         onDragEnd(longitude, latitude);
       };
-      map.on("dragend", () => {
+
+      geolocate.on("geolocate", () => {
         handleMoveEvents();
       });
-      map.on("moveend", () => {
+      map.on("dragend", () => {
         handleMoveEvents();
       });
 
