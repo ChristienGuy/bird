@@ -12,11 +12,6 @@ jobs:
       - name: Install modules
         run: npm ci
       - name: Run ESLint
-        run: npm run lint
-        env:
-          CI: true
-        continue-on-error: true
-      - name: Write ESLint report
         run: npm run lint:report
         continue-on-error: true
       - name: Annotate Code Linting Results
