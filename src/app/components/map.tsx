@@ -78,9 +78,7 @@ export default function MapComponent({
           .setLngLat([sightingsData.lng, sightingsData.lat])
           .setPopup(popup);
         if (mapRef.current) {
-          {
-            marker.addTo(mapRef.current);
-          }
+          marker.addTo(mapRef.current);
         }
         markersRef.current.push(marker);
       });
