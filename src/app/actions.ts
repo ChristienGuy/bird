@@ -2,14 +2,12 @@
 
 import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
-import Fuse, { FuseResult } from "fuse.js";
+import Fuse from "fuse.js";
 
+/*
+ * REGION ACTIONS
+ */
 export type Region = {
-  name: string;
-  code: string;
-};
-
-export type FlattenedRegion = {
   code: string;
   name: string;
   type: string;
@@ -19,16 +17,33 @@ export type FlattenedRegion = {
   fullHierarchyName: string;
 };
 
-const fuseOptions = {
+export async function getRegion(regionCode: string) {
+  // We're reassigning the imported flattenedRegionCodes to a new variable
+  // here exclusively so that we can cast it to a Region[] type and get
+  // good type checking in the rest of the function.
+  const regions = flattenedRegionCodes as Region[];
+
+  const region = regions.find((region) => region.code === regionCode);
+
+  if (!region) {
+    throw new Error(`Could not find region with code ${regionCode}`);
+  }
+
+  return region;
+}
+
+export type FindRegionsResponse = {
+  item: Region;
+};
+
+const regionsFuseIndex = new Fuse<Region>(flattenedRegionCodes, {
   includeScore: true,
   keys: ["name"],
-};
-const regionsFuseIndex = new Fuse<FlattenedRegion>(
-  flattenedRegionCodes,
-  fuseOptions,
-);
+});
 
-export async function findMatchingRegions(query: string) {
+export async function findRegions(
+  query: string,
+): Promise<FindRegionsResponse[]> {
   const regions = regionsFuseIndex.search(query);
   if (!regions || regions.length === 0) {
     throw new Error(`Could not find any regions matching ${query}`);
@@ -36,6 +51,9 @@ export async function findMatchingRegions(query: string) {
   return regions.slice(0, 10);
 }
 
+/*
+ * SPECIES SEARCH ACTIONS
+ */
 export type Species = {
   sciName: string;
   comName: string;

@@ -20,6 +20,7 @@ type MobileLinkProps = LinkProps & {
 function MobileLink({ onOpenChange, className, ...props }: MobileLinkProps) {
   const pathname = usePathname();
   const isActive = pathname === props.href;
+
   return (
     <Link
       aria-current={isActive ? "page" : undefined}

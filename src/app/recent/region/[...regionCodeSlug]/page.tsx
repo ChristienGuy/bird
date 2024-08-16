@@ -1,8 +1,8 @@
 import { EBIRD_BASE_API_URL } from "@/constants";
-import { Map } from "@/app/components/map";
 import { ViewController } from "./view-controller";
 import { CardView } from "./card-view";
 import { MapView } from "./map-view";
+import { getRegion } from "@/app/actions";
 
 export type Sighting = {
   speciesCode: string;
@@ -21,9 +21,9 @@ export type Sighting = {
 };
 type RecentSightingsResponse = Array<Sighting>;
 
-const getRecentSightings = async (
+async function getRecentSightings(
   regionCode: string,
-): Promise<RecentSightingsResponse> => {
+): Promise<RecentSightingsResponse> {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
@@ -47,26 +47,25 @@ const getRecentSightings = async (
   });
 
   return response.json();
-};
+}
 
 export default async function RecentSightingsPage({
   params,
-  searchParams,
 }: {
   params: {
     regionCodeSlug: string[];
   };
-  searchParams: { name: string };
 }) {
   // TODO: make a function that finds a RegionCode by regionCodeSlug
   // So that we can show the region name at the top of the page
   const regionCode = params.regionCodeSlug.join("-").toUpperCase();
   const sightings = await getRecentSightings(regionCode);
+  const region = await getRegion(regionCode);
 
   return (
     <div className="flex min-h-screen flex-col items-center p-4 md:p-24">
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings in {searchParams.name}{" "}
+        Recent bird sightings in {region.name}{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>
