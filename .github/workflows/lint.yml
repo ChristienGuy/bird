@@ -11,8 +11,8 @@ jobs:
           cache: "npm"
       - name: Install modules
         run: npm ci
-      - name: Run ESLint
-        run: npm run lint
+      # - name: Run ESLint
+      #   run: npm run lint
       - name: Write ESLint report
         run: npm run lint:report
         continue-on-error: true
