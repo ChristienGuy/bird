@@ -1,5 +1,7 @@
 import { RegionCodeSearch } from "./RegionCodeSearch";
 
+const unused = 0;
+
 export default async function Home() {
   return (
     <>
