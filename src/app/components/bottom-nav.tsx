@@ -18,18 +18,19 @@ function BottomNavLink({
   return (
     <Link
       aria-current={pathname === href ? "page" : undefined}
-      className="flex px-6 py-4 active:bg-gray-200 aria-[current='page']:text-primary"
+      className="flex px-6 py-4 aria-[current='page']:text-primary"
       href={href}
     >
       {children}
     </Link>
   );
 }
+
 export function BottomNav() {
   return (
     <footer className="fixed bottom-0 left-0 right-0 border-t border-t-gray-300 bg-white text-center shadow-sm">
       <nav className="flex justify-center">
-        <ul className="grid grid-cols-4">
+        <ul className="grid grid-cols-3">
           <li>
             <BottomNavLink href="/">
               <span className="sr-only">Home</span>
