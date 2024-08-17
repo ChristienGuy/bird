@@ -76,7 +76,7 @@ export function RegionCodeSearch() {
         {regionSearchResults.length > 0 && (
           <ComboboxOptions>
             {regionSearchResults.map(({ item: region }) => {
-              const regionPath = region.code.toLowerCase().split("-").join("/");
+              // const regionPath = region.code.toLowerCase().split("-").join("/");
 
               const name = region[region.type];
               const remainingHeriarchy = getRegionAncestorHierarchyName(region);
@@ -87,13 +87,10 @@ export function RegionCodeSearch() {
                   key={region.code}
                   value={region}
                 >
-                  <Link
-                    className="flex flex-col p-3 group-data-[focus]:bg-orange-400 group-data-[focus]:text-white"
-                    href={`/recent/region/${regionPath}`}
-                  >
+                  <div className="flex flex-col p-3 group-data-[focus]:bg-orange-400 group-data-[focus]:text-white">
                     <div className="font-medium">{name}</div>
                     <div className="text-sm">{remainingHeriarchy}</div>
-                  </Link>
+                  </div>
                 </ComboboxOption>
               );
             })}
