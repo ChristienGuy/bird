@@ -1,11 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 import { findRegions, FindRegionsResponse } from "./actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useDebounceCallback } from "usehooks-ts";
 
 export function RegionCodeSearch() {
   "use client";
@@ -20,17 +21,37 @@ export function RegionCodeSearch() {
     setRegionSearchResults(searchMatches);
   };
 
+  const handleSearch = useCallback(
+    async (query: string) => {
+      console.log("debouncedFindRegions", query);
+
+      if (!query) {
+        return;
+      }
+
+      const searchMatches = await findRegions(query);
+      setRegionSearchResults(searchMatches);
+    },
+    [setRegionSearchResults],
+  );
+
+  const debouncedHandleSearch = useDebounceCallback(handleSearch, 200);
+
   return (
     <div className="flex flex-col gap-4">
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <Label htmlFor="regionSearch" className="gap-2">
-          Search for a region:
+          Location:
         </Label>
         <Input
           id="regionSearch"
           value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
+          onChange={(event) => {
+            debouncedHandleSearch(event.target.value);
+            setSearchQuery(event.target.value);
+          }}
           type="text"
+          placeholder="Search for a county, city, region..."
         />
         <Button type="submit">Search for Region</Button>
       </form>
