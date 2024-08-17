@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import { findRegions, FindRegionsResponse, Region } from "./actions";
-import Link from "next/link";
 import { useDebounceCallback } from "usehooks-ts";
 
 import {
@@ -76,8 +75,6 @@ export function RegionCodeSearch() {
         {regionSearchResults.length > 0 && (
           <ComboboxOptions>
             {regionSearchResults.map(({ item: region }) => {
-              // const regionPath = region.code.toLowerCase().split("-").join("/");
-
               const name = region[region.type];
               const remainingHeriarchy = getRegionAncestorHierarchyName(region);
 
