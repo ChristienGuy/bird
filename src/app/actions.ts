@@ -10,7 +10,7 @@ import Fuse from "fuse.js";
 export type Region = {
   code: string;
   name: string;
-  type: string;
+  type: "country" | "subnational1" | "subnational2";
   country: string;
   subnational1: string | null;
   subnational2: string | null;
