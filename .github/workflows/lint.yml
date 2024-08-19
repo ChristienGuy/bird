@@ -1,0 +1,22 @@
+name: CI
+on: push
+jobs:
+  "Lint":
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install modules
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint:report
+        continue-on-error: true
+      - name: Annotate Code Linting Results
+        uses: ataylorme/eslint-annotate-action@v3
+        with:
+          report-json: "eslint_report.json"
+          check-name: "ESLint"
+          markdown-report-on-step-summary: true
