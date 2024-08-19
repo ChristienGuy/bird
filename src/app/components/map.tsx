@@ -23,6 +23,7 @@ export default function MapComponent({
   useEffect(() => {
     const accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
     mapboxgl.accessToken = `${accessToken}`;
+
     if (mapContainer.current) {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
@@ -46,22 +47,31 @@ export default function MapComponent({
 
       map.addControl(geolocate);
 
-      const handleMoveEvents = () => {
-        const longitude = map.getCenter().lng;
-        const latitude = map.getCenter().lat;
-        onDragEnd(longitude, latitude);
-      };
-
-      geolocate.on("geolocate", () => {
-        handleMoveEvents();
-      });
-      map.on("dragend", () => {
-        handleMoveEvents();
-      });
-
       return () => map.remove();
     }
   }, []);
+
+  useEffect(() => {
+    if (mapRef.current === null) return;
+
+    const handleMoveEvents = () => {
+      if (mapRef.current) {
+        const longitude = mapRef.current.getCenter().lng;
+        const latitude = mapRef.current.getCenter().lat;
+        onDragEnd(longitude, latitude);
+      }
+    };
+
+    mapRef.current.on("dragend", () => {
+      handleMoveEvents();
+    });
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.off("dragend", handleMoveEvents);
+      }
+    };
+  }, [onDragEnd]);
 
   useEffect(() => {
     markersRef.current.forEach((marker) => {
