@@ -104,7 +104,7 @@ export async function getNearbySightings(longitude: number, latitude: number) {
     throw new Error("Missing eBird API token");
   }
 
-  const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent?lat=${latitude}&lng=${longitude}`;
+  const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent?lat=${latitude}&lng=${longitude}&maxResults=10&dist=5`;
 
   const headers = new Headers();
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
