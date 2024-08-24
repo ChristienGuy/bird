@@ -9,7 +9,7 @@ if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
   throw new Error("Missing mapBox API token");
 }
 
-export default function MapComponent({
+export function Map({
   onMoveEnd,
   nearbySightings,
   className,
