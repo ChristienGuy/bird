@@ -2,14 +2,8 @@
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
-import {
-  ComponentProps,
-  PropsWithChildren,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import ReactMapGl, { ViewState } from "react-map-gl";
+import { ComponentProps, useEffect, useRef } from "react";
+import ReactMapGl from "react-map-gl";
 import { NearbySightingsGetResponse } from "../actions";
 
 if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
@@ -117,8 +111,8 @@ export function Map(props: ComponentProps<typeof ReactMapGl>) {
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
       mapStyle="mapbox://styles/mapbox/outdoors-v12"
       style={{
-        height: "100dvh",
-        width: "100%",
+        height: "100vh",
+        width: "100vw",
       }}
       {...props}
     />

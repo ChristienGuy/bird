@@ -29,6 +29,10 @@ export function MapNearby({
         latitude: 53.185335,
         zoom: 10,
       }}
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
     >
       <GeolocateControl />
       {nearbySightings?.map((sighting) => (

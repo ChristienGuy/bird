@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main>
-          <div className="flex flex-col md:min-h-screen">
+          <div className="grid min-h-dvh grid-rows-[auto_1fr]">
             <TopNav />
             <div>{children}</div>
           </div>
