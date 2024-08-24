@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 import {
   Bars3Icon,
   HomeIcon,
-  MagnifyingGlassIcon,
+  MagnifyingGlassCircleIcon,
   MapIcon,
-} from "@heroicons/react/20/solid";
+} from "@heroicons/react/24/solid";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -46,22 +46,24 @@ function MobileNav() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left">
-        <h2 className="text-xl font-bold">Birds</h2>
         <nav className="mt-3">
-          <ul>
+          <ul className="flex flex-col gap-3">
             <li>
               <MobileLink onOpenChange={setOpen} href="/">
                 <HomeIcon className="mr-2 size-4" /> Home
               </MobileLink>
             </li>
             <li>
-              <MobileLink onOpenChange={setOpen} href="/species">
-                <MagnifyingGlassIcon className="mr-2 size-4" /> Species
-              </MobileLink>
+              <span className="font-bold">Recent Sightings</span>
             </li>
             <li>
               <MobileLink onOpenChange={setOpen} href="/recent/nearby">
                 <MapIcon className="mr-2 size-4" /> Nearby
+              </MobileLink>
+            </li>
+            <li>
+              <MobileLink onOpenChange={setOpen} href="/recent/region">
+                <MagnifyingGlassCircleIcon className="mr-2 size-4" /> By Region
               </MobileLink>
             </li>
           </ul>
