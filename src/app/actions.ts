@@ -85,7 +85,7 @@ export async function findSpecies(query: string): Promise<SpeciesGetResponse> {
 /**
  * NEARBY SIGHTINGS ACTIONS
  */
-type Sighting = {
+export type Sighting = {
   speciesCode: string;
   comName: string;
   sciName: string;
