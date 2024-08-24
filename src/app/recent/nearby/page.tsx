@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MapComponent from "../../components/map";
+import { Map } from "../../components/map";
 import { getNearbySightings } from "@/app/actions";
 
 export type NearbySightingsResponse = Array<{
@@ -37,7 +37,7 @@ export default function NearbySightingsPage() {
 
   return (
     <div>
-      <MapComponent
+      <Map
         className="h-dvh w-full"
         onMoveEnd={handleMoveEnd}
         nearbySightings={nearbySightings}
