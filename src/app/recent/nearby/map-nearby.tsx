@@ -9,7 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 function jitterCoordinate(coordinate: number) {
-  return coordinate + Math.random() / 1000;
+  return coordinate + (Math.random() / 500) * (Math.random() > 0.5 ? 1 : -1);
 }
 
 export function MapNearby({
