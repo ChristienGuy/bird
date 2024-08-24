@@ -39,8 +39,6 @@ export function RegionCodeSearch() {
 
   const handleSearch = useCallback(
     async (query: string) => {
-      console.log("debouncedFindRegions", query);
-
       if (!query) {
         return;
       }
