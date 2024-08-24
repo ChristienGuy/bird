@@ -60,8 +60,8 @@ export function RegionCodeSearch() {
           if (!region) return;
 
           const regionPath = region.code.toLowerCase().split("-").join("/");
+
           router.push(`/recent/region/${regionPath}`);
-          console.log("onChange", region);
         }}
       >
         <ComboboxInput<Region>
