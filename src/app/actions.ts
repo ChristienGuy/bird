@@ -3,6 +3,7 @@
 import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
+import { EBIRD_BASE_API_URL } from "@/constants";
 
 /*
  * REGION ACTIONS
@@ -79,4 +80,25 @@ const speciesFuseIndex = new Fuse<Species>(speciesData as readonly Species[], {
 });
 export async function findSpecies(query: string): Promise<SpeciesGetResponse> {
   return speciesFuseIndex.search(query).slice(0, 10);
+}
+
+export async function getNearbySightings(longitude: number, latitude: number) {
+  if (!process.env.EBIRD_API_TOKEN) {
+    throw new Error("Missing eBird API token");
+  }
+
+  const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent?lat=${latitude}&lng=${longitude}`;
+
+  const headers = new Headers();
+  headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
+  );
+
+  const response = await fetch(url, {
+    headers,
+    redirect: "follow",
+  });
+  return response.json();
 }
