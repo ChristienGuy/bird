@@ -12,8 +12,8 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-function jitterCoordinate(coordinate: number) {
-  return coordinate + (Math.random() / 500) * (Math.random() > 0.5 ? 1 : -1);
+function deterministicJitterCoordinate(coordinate: number, index: number) {
+  return coordinate + (index / 10000) * (index % 2 === 0 ? 1 : -1);
 }
 
 function BirdCard({
@@ -66,10 +66,10 @@ export function MapNearby({
   const handleMoveEnd = async (longitude: number, latitude: number) => {
     const nearbySightings = await getNearbySightings(longitude, latitude);
     setNearbySightings(
-      nearbySightings.map((sighting) => ({
+      nearbySightings.map((sighting, index) => ({
         ...sighting,
-        lat: jitterCoordinate(sighting.lat),
-        lng: jitterCoordinate(sighting.lng),
+        lat: deterministicJitterCoordinate(sighting.lat, index),
+        lng: deterministicJitterCoordinate(sighting.lng, index),
       })),
     );
   };
