@@ -49,13 +49,16 @@ export function MapNearby({
           </Marker>
         ))}
       </Map>
-      <div className="absolute bottom-6 left-0 right-0">
-        <ScrollArea>
-          <ul className="flex flex-row items-stretch gap-3 px-4">
+      <div className="absolute bottom-8 left-0 right-0">
+        <ScrollArea className="pb-4">
+          <ul className="grid grid-flow-col grid-rows-1 items-stretch gap-3 px-4">
             {nearbySightings?.map((sighting) => (
               <li key={sighting.sciName}>
-                <Card className="h-full w-full p-4">
-                  <div>{sighting.comName}</div>
+                <Card className="h-full whitespace-nowrap p-4">
+                  <div className="text-base font-bold">{sighting.comName}</div>
+                  <div className="text-sm font-light text-gray-500">
+                    {sighting.sciName}
+                  </div>
                 </Card>
               </li>
             ))}
