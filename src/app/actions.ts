@@ -85,7 +85,7 @@ export async function findSpecies(query: string): Promise<SpeciesGetResponse> {
 /**
  * NEARBY SIGHTINGS ACTIONS
  */
-export type NearbySightingsGetResponse = Array<{
+type Sighting = {
   speciesCode: string;
   comName: string;
   sciName: string;
@@ -98,7 +98,8 @@ export type NearbySightingsGetResponse = Array<{
   obsValid: boolean;
   obsReviewed: boolean;
   locationPrivate: boolean;
-}>;
+};
+export type NearbySightingsGetResponse = Array<Sighting>;
 export async function getNearbySightings(longitude: number, latitude: number) {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
@@ -117,5 +118,12 @@ export async function getNearbySightings(longitude: number, latitude: number) {
     headers,
     redirect: "follow",
   });
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch nearby sightings: ${response.statusText}`);
+  }
+
+  const json: NearbySightingsGetResponse = await response.json();
+
+  return json;
 }
