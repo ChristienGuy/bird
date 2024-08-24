@@ -11,7 +11,7 @@ import { EBIRD_BASE_API_URL } from "@/constants";
 export type Region = {
   code: string;
   name: string;
-  type: string;
+  type: "country" | "subnational1" | "subnational2";
   country: string;
   subnational1: string | null;
   subnational2: string | null;
