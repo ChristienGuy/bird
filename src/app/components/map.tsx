@@ -5,20 +5,22 @@ import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import { NearbySightingsResponse } from "../recent/nearby/page";
 
+if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
+  throw new Error("Missing mapBox API token");
+}
+
 export default function MapComponent({
-  onDragEnd,
+  onMoveEnd,
   nearbySightings,
+  className,
 }: {
   nearbySightings: NearbySightingsResponse | undefined;
-  onDragEnd: (longitude: number, latitude: number) => void;
+  onMoveEnd: (longitude: number, latitude: number) => void;
+  className?: string;
 }) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-
-  if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
-    throw new Error("Missing mapBox API token");
-  }
 
   useEffect(() => {
     const accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
@@ -52,53 +54,47 @@ export default function MapComponent({
   }, []);
 
   useEffect(() => {
-    if (mapRef.current === null) return;
+    const map = mapRef.current;
+    if (!map) return;
 
-    const handleMoveEvents = () => {
-      if (mapRef.current) {
-        const longitude = mapRef.current.getCenter().lng;
-        const latitude = mapRef.current.getCenter().lat;
-        onDragEnd(longitude, latitude);
-      }
+    const handleMoveEnd = () => {
+      const longitude = map.getCenter().lng;
+      const latitude = map.getCenter().lat;
+      onMoveEnd(longitude, latitude);
     };
 
-    mapRef.current.on("dragend", () => {
-      handleMoveEvents();
-    });
+    map.on("moveend", handleMoveEnd);
 
     return () => {
-      if (mapRef.current) {
-        mapRef.current.off("dragend", handleMoveEvents);
+      if (map) {
+        map.off("moveend", handleMoveEnd);
       }
     };
-  }, [onDragEnd]);
+  }, [onMoveEnd]);
 
   useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
     markersRef.current.forEach((marker) => {
       marker.remove();
     });
     markersRef.current = [];
 
-    if (!mapRef.current) {
-      return;
-    }
-
-    if (mapRef.current) {
-      nearbySightings?.forEach((sightingsData) => {
-        const popup = new mapboxgl.Popup({ offset: 25 })
-          .setHTML(`<h3>${sightingsData.comName}</h3>
+    nearbySightings?.forEach((sightingsData) => {
+      const popup = new mapboxgl.Popup({ offset: 25 })
+        .setHTML(`<h3>${sightingsData.comName}</h3>
           <p>${sightingsData.locName}</p>
           <p>${sightingsData.howMany} Sighted</p>`);
-        const marker = new mapboxgl.Marker()
-          .setLngLat([sightingsData.lng, sightingsData.lat])
-          .setPopup(popup);
-        if (mapRef.current) {
-          marker.addTo(mapRef.current);
-        }
-        markersRef.current.push(marker);
-      });
-    }
+
+      const marker = new mapboxgl.Marker()
+        .setLngLat([sightingsData.lng, sightingsData.lat])
+        .setPopup(popup);
+
+      marker.addTo(map);
+
+      markersRef.current.push(marker);
+    });
   }, [nearbySightings]);
 
-  return <div ref={mapContainer} className="mt-4 h-[34em] w-full"></div>;
+  return <div ref={mapContainer} className={className}></div>;
 }

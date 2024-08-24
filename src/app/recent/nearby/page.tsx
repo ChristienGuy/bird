@@ -23,7 +23,7 @@ export default function NearbySightingsPage() {
   const [nearbySightings, setNearbySightings] =
     useState<NearbySightingsResponse>();
 
-  const handleDragEnd = (longitude: number, latitude: number) => {
+  const handleMoveEnd = (longitude: number, latitude: number) => {
     getNearbySightings(longitude, latitude).then((response) => {
       setNearbySightings(response);
     });
@@ -37,9 +37,9 @@ export default function NearbySightingsPage() {
 
   return (
     <div>
-      <h1 className="text-4xl">Nearby</h1>
       <MapComponent
-        onDragEnd={handleDragEnd}
+        className="h-dvh w-full"
+        onMoveEnd={handleMoveEnd}
         nearbySightings={nearbySightings}
       />
     </div>

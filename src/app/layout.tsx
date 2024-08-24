@@ -22,7 +22,7 @@ export default function RootLayout({
         <main>
           <div className="flex flex-col md:min-h-screen">
             <TopNav />
-            <div className="p-2">{children}</div>
+            <div>{children}</div>
           </div>
         </main>
       </body>
