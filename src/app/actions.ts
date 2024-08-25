@@ -4,7 +4,6 @@ import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 import { EBIRD_BASE_API_URL } from "@/constants";
-import { log } from "console";
 
 /*
  * REGION ACTIONS
