@@ -59,6 +59,12 @@ export function MapNearby({
 }: {
   initialSightings: NearbySightingsGetResponse;
 }) {
+  const [viewState, setViewState] = useState({
+    latitude: initialSightings[0].lat,
+    longitude: initialSightings[0].lng,
+    zoom: 10,
+  });
+
   const mapRef = useRef<MapRef>(null);
 
   const [nearbySightings, setNearbySightings] =
@@ -103,8 +109,8 @@ export function MapNearby({
       // We use half the distance between the north east and north west corners
       // as the radius within which to fetch nearby sightings
       // This ensures that we get sightings that are within the current map bounds
-      // We also cap the distance to 50km 'cause eBird does accept more than that
-      distance: Math.min(distance / 2, 50),
+      // We also cap the distance between 1km and 50km
+      distance: Math.max(Math.min(distance / 2, 50), 1),
     });
 
     setNearbySightings(
@@ -120,15 +126,23 @@ export function MapNearby({
     );
   };
 
+  const flyToSighting = (sighting: Sighting) => {
+    if (!mapRef.current) return;
+
+    mapRef.current.flyTo({
+      center: [sighting.lng, sighting.lat],
+      zoom: 14,
+    });
+  };
+
   return (
     <div className="relative h-full">
       <Map
-        ref={mapRef}
-        initialViewState={{
-          latitude: initialSightings[0].lat,
-          longitude: initialSightings[0].lng,
-          zoom: 10,
+        {...viewState}
+        onMove={(event) => {
+          setViewState(event.viewState);
         }}
+        ref={mapRef}
         onMoveEnd={(event) => {
           handleMoveEnd({
             latitude: event.viewState.latitude,
@@ -148,6 +162,9 @@ export function MapNearby({
             latitude={sighting.lat}
             longitude={sighting.lng}
             onClick={() => {
+              if (viewState.zoom < 13) {
+                flyToSighting(sighting);
+              }
               setSelectedSpeciesCode(sighting.speciesCode);
             }}
           >
@@ -173,13 +190,12 @@ export function MapNearby({
               <li key={sighting.speciesCode}>
                 <BirdCard
                   onClick={() => {
-                    // TODO: throw error if map is not initialise
-                    if (!mapRef.current) return;
-
-                    mapRef.current.flyTo({
-                      center: [sighting.lng, sighting.lat],
-                      zoom: 14,
-                    });
+                    // We only fly to the sighting if the zoom level is less than 13
+                    // This prevent disorienting behavior when the user clicks a sighting
+                    // when the map is already zoomed in
+                    if (viewState.zoom < 13) {
+                      flyToSighting(sighting);
+                    }
 
                     setSelectedSpeciesCode(sighting.speciesCode);
                   }}
