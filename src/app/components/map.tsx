@@ -2,8 +2,8 @@
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
-import { ComponentProps, useEffect, useRef } from "react";
-import ReactMapGl from "react-map-gl";
+import { ComponentProps, forwardRef, useEffect, useRef } from "react";
+import ReactMapGl, { MapRef } from "react-map-gl";
 import { NearbySightingsGetResponse } from "../actions";
 
 if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
@@ -105,16 +105,19 @@ export function MapDeprecated({
   return <div ref={mapContainer} className={className}></div>;
 }
 
-export function Map(props: ComponentProps<typeof ReactMapGl>) {
-  return (
-    <ReactMapGl
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
-      mapStyle="mapbox://styles/mapbox/outdoors-v12"
-      style={{
-        height: "100vh",
-        width: "100vw",
-      }}
-      {...props}
-    />
-  );
-}
+export const Map = forwardRef<MapRef, ComponentProps<typeof ReactMapGl>>(
+  function Map(props, ref) {
+    return (
+      <ReactMapGl
+        ref={ref}
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
+        mapStyle="mapbox://styles/mapbox/outdoors-v12"
+        style={{
+          height: "100vh",
+          width: "100vw",
+        }}
+        {...props}
+      />
+    );
+  },
+);
