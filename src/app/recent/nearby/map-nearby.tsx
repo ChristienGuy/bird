@@ -12,8 +12,37 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-function deterministicJitterCoordinate(coordinate: number, index: number) {
-  return coordinate + (index / 10000) * (index % 2 === 0 ? 1 : -1);
+// TODO: explain 65 is lowest charCode and 122 is largest charCode
+function normalise(number: number, min = 65, max = 122) {
+  return (number - min) / (max - min);
+}
+
+function deterministicallyDistributeLatLng(
+  sighting: Sighting,
+  index: number,
+  total = 10,
+) {
+  console.log("sighting", {
+    sciName: sighting.sciName,
+  });
+
+  // Calculating the angle from 0 to 2PI (360 degrees)
+  // based on cutting the circle into {total} equal parts
+  // and then multiplying by the index to get the angle
+  const angle = (index / total) * Math.PI * 2;
+
+  const latNoise = normalise(sighting.sciName.charCodeAt(0));
+  const lngNoise = normalise(sighting.sciName.charCodeAt(1));
+
+  console.log("noise", {
+    latNoise,
+    lngNoise,
+  });
+
+  return {
+    lat: sighting.lat + Math.sin(angle) * latNoise * 0.006,
+    lng: sighting.lng + Math.cos(angle) * lngNoise * 0.006,
+  };
 }
 
 function BirdCard({
@@ -65,12 +94,17 @@ export function MapNearby({
 
   const handleMoveEnd = async (longitude: number, latitude: number) => {
     const nearbySightings = await getNearbySightings(longitude, latitude);
+
     setNearbySightings(
-      nearbySightings.map((sighting, index) => ({
-        ...sighting,
-        lat: deterministicJitterCoordinate(sighting.lat, index),
-        lng: deterministicJitterCoordinate(sighting.lng, index),
-      })),
+      nearbySightings.map((sighting, index) => {
+        if (index === 0) return sighting;
+        const { lat, lng } = deterministicallyDistributeLatLng(sighting, index);
+        return {
+          ...sighting,
+          lat,
+          lng,
+        };
+      }),
     );
   };
 
@@ -91,7 +125,7 @@ export function MapNearby({
         }}
       >
         <GeolocateControl />
-        {nearbySightings?.map((sighting) => (
+        {nearbySightings?.map((sighting, index) => (
           <Marker
             key={sighting.speciesCode}
             latitude={sighting.lat}
@@ -106,6 +140,7 @@ export function MapNearby({
                 {
                   "border-2 border-orange-400":
                     selectedSpeciesCode === sighting.speciesCode,
+                  "border-2 border-red-600": index === 0, // debug for scatter
                 },
               )}
             >
