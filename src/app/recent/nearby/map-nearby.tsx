@@ -27,6 +27,9 @@ function BirdCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // FIXME: this has a bug where, if the user clicks the same sighting twice,
+  // the scrollIntoView will not work. This is because the `isSelected` prop
+  // will not change, and the useEffect will not run.
   useEffect(() => {
     if (isSelected && cardRef.current) {
       cardRef.current.scrollIntoView({
@@ -115,7 +118,6 @@ export function MapNearby({
 
     setNearbySightings(
       nearbySightings.map((sighting, index) => {
-        if (index === 0) return sighting;
         const { lat, lng } = deterministicallyDistributeLatLng(sighting, index);
         return {
           ...sighting,
@@ -156,7 +158,7 @@ export function MapNearby({
       >
         <GeolocateControl />
         {/* TODO: memoise these markers if we get a performance hit */}
-        {nearbySightings?.map((sighting, index) => (
+        {nearbySightings?.map((sighting) => (
           <Marker
             key={sighting.speciesCode}
             latitude={sighting.lat}
@@ -174,7 +176,6 @@ export function MapNearby({
                 {
                   "border-2 border-orange-400":
                     selectedSpeciesCode === sighting.speciesCode,
-                  "border-2 border-red-600": index === 0, // debug for scatter
                 },
               )}
             >
