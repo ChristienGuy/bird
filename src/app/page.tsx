@@ -23,6 +23,7 @@ function StyledLink({
 export default async function Home() {
   return (
     <div className="flex flex-col items-center">
+      <img src="https://images.prod.qogita.com/files/images/variants/n2fyMv4CKNp9yuk9gVwMH3.jpg?auto=format&fit=max&w=640&q=75" />
       <ul className="flex w-full max-w-[80%] flex-col gap-3">
         <LinkListItem>
           <StyledLink href="/recent/nearby">See nearby sightings</StyledLink>
