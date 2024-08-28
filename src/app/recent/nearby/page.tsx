@@ -1,47 +1,27 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { Map } from "../../components/map";
 import { getNearbySightings } from "@/app/actions";
+import { MapNearby } from "./map-nearby";
+import { deterministicallyDistributeLatLng } from "./nearby-map-util";
 
-export type NearbySightingsResponse = Array<{
-  speciesCode: string;
-  comName: string;
-  sciName: string;
-  locId: string;
-  locName: string;
-  obsDt: string;
-  howMany: number;
-  lat: number;
-  lng: number;
-  obsValid: boolean;
-  obsReviewed: boolean;
-  locationPrivate: boolean;
-}>;
+export default async function NearbySightingsPage() {
+  const nearbySightingsResponse = await getNearbySightings({
+    latitude: 53.185335,
+    longitude: -1.688074,
+    distance: 10,
+  });
 
-export default function NearbySightingsPage() {
-  const [nearbySightings, setNearbySightings] =
-    useState<NearbySightingsResponse>();
-
-  const handleMoveEnd = (longitude: number, latitude: number) => {
-    getNearbySightings(longitude, latitude).then((response) => {
-      setNearbySightings(response);
-    });
-  };
-
-  useEffect(() => {
-    getNearbySightings(-1.688074, 53.185335).then((response) => {
-      setNearbySightings(response);
-    });
-  }, []);
+  const nearbySightings = nearbySightingsResponse.map((sighting, index) => {
+    if (index === 0) return sighting;
+    const { lat, lng } = deterministicallyDistributeLatLng(sighting, index);
+    return {
+      ...sighting,
+      lat,
+      lng,
+    };
+  });
 
   return (
-    <div>
-      <Map
-        className="h-dvh w-full"
-        onMoveEnd={handleMoveEnd}
-        nearbySightings={nearbySightings}
-      />
+    <div className="h-full">
+      <MapNearby initialSightings={nearbySightings} />
     </div>
   );
 }

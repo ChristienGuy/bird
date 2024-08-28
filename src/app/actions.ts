@@ -82,12 +82,45 @@ export async function findSpecies(query: string): Promise<SpeciesGetResponse> {
   return speciesFuseIndex.search(query).slice(0, 10);
 }
 
-export async function getNearbySightings(longitude: number, latitude: number) {
+/**
+ * NEARBY SIGHTINGS ACTIONS
+ */
+export type Sighting = {
+  speciesCode: string;
+  comName: string;
+  sciName: string;
+  locId: string;
+  locName: string;
+  obsDt: string;
+  howMany: number;
+  lat: number;
+  lng: number;
+  obsValid: boolean;
+  obsReviewed: boolean;
+  locationPrivate: boolean;
+};
+export type NearbySightingsGetResponse = Array<Sighting>;
+export async function getNearbySightings({
+  latitude,
+  longitude,
+  distance,
+}: {
+  latitude: number;
+  longitude: number;
+  distance: number;
+}) {
   if (!process.env.EBIRD_API_TOKEN) {
     throw new Error("Missing eBird API token");
   }
 
-  const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent?lat=${latitude}&lng=${longitude}`;
+  const url = `${EBIRD_BASE_API_URL}/data/obs/geo/recent`;
+
+  const searchParams = new URLSearchParams({
+    lat: latitude.toFixed(2),
+    lng: longitude.toFixed(2),
+    maxResults: "10",
+    dist: distance.toString(),
+  });
 
   const headers = new Headers();
   headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
@@ -96,9 +129,16 @@ export async function getNearbySightings(longitude: number, latitude: number) {
     "bird-sightings/0.1 (christien.guy@gmail.com)",
   );
 
-  const response = await fetch(url, {
+  const response = await fetch(`${url}?${searchParams.toString()}`, {
     headers,
     redirect: "follow",
   });
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch nearby sightings: ${response.statusText}`);
+  }
+
+  const json: NearbySightingsGetResponse = await response.json();
+
+  return json;
 }

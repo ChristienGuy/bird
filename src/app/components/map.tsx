@@ -2,22 +2,28 @@
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef } from "react";
-import { NearbySightingsResponse } from "../recent/nearby/page";
+import { ComponentProps, forwardRef, useEffect, useRef } from "react";
+import ReactMapGl, { MapRef } from "react-map-gl";
+import { NearbySightingsGetResponse } from "../actions";
 
 if (!process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN) {
   throw new Error("Missing mapBox API token");
 }
 
-export function Map({
+type DeprecatedMapProps = {
+  onMoveEnd: (longitude: number, latitude: number) => void;
+  nearbySightings: NearbySightingsGetResponse | undefined;
+  className?: string;
+};
+
+/**
+ * @deprecated in favor of react map gl
+ */
+export function MapDeprecated({
   onMoveEnd,
   nearbySightings,
   className,
-}: {
-  nearbySightings: NearbySightingsResponse | undefined;
-  onMoveEnd: (longitude: number, latitude: number) => void;
-  className?: string;
-}) {
+}: DeprecatedMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -98,3 +104,20 @@ export function Map({
 
   return <div ref={mapContainer} className={className}></div>;
 }
+
+export const Map = forwardRef<MapRef, ComponentProps<typeof ReactMapGl>>(
+  function Map(props, ref) {
+    return (
+      <ReactMapGl
+        ref={ref}
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
+        mapStyle="mapbox://styles/mapbox/outdoors-v12"
+        style={{
+          height: "100vh",
+          width: "100vw",
+        }}
+        {...props}
+      />
+    );
+  },
+);
