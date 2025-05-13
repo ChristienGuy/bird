@@ -1,5 +1,6 @@
 "use client";
 import {
+  BirdImageResponse,
   getBirdImage,
   getNearbySightings,
   NearbySightingsGetResponse,
@@ -28,7 +29,7 @@ function BirdCard({
   isSelected: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [birdImage, setBirdImage] = useState<any>(null);
+  const [birdImage, setBirdImage] = useState<BirdImageResponse>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ function BirdCard({
         <div className="text-base font-bold">{sighting.comName}</div>
         {isLoading ? (
           <div className="h-8 w-8 animate-pulse rounded-sm bg-gray-300" />
-        ) : (
+        ) : birdImage ? (
           <Image
             className="h-8 w-8 rounded-sm object-cover"
             src={
@@ -79,6 +80,10 @@ function BirdCard({
             width={64}
             height={64}
           />
+        ) : (
+          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-300">
+            <p className="m-0 p-0 text-center text-lg">🐦</p>
+          </div>
         )}
       </div>
       <div className="text-sm font-light text-gray-500">{sighting.sciName}</div>
