@@ -146,7 +146,7 @@ export async function getNearbySightings({
 /*
  * NEARBY AND RECENT SIGHTINGS ACTIONS
  */
-export async function getBirdImage(speciesName: string): Promise<{
+export type BirdImageResponse = {
   query: {
     pages: {
       [key: string]: {
@@ -165,7 +165,11 @@ export async function getBirdImage(speciesName: string): Promise<{
       };
     };
   };
-}> {
+};
+
+export async function getBirdImage(
+  speciesName: string,
+): Promise<BirdImageResponse> {
   const url = `https://en.wikipedia.org/w/api.php`;
 
   const params = new URLSearchParams({
