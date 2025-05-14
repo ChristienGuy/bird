@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EBIRD_BASE_API_URL } from "@/constants";
-import { getRegion } from "@/app/actions";
+import { getBirdImage, getRegion } from "@/app/actions";
 
 type RecentSightingsResponse = Array<{
   speciesCode: string;
@@ -55,53 +55,6 @@ async function getRecentSightings(
   return response.json();
 }
 
-async function getBirdImage(speciesName: string): Promise<{
-  query: {
-    pages: {
-      [key: string]: {
-        pageid: number;
-        ns: number;
-        title: string;
-        thumbnail: {
-          source: string;
-          width: number;
-          height: number;
-        };
-        pageprops: {
-          displaytitle: string;
-          defaultsort: string;
-        };
-      };
-    };
-  };
-}> {
-  const url = `https://en.wikipedia.org/w/api.php`;
-
-  const params = new URLSearchParams({
-    action: "query",
-    prop: "pageimages|pageprops",
-    format: "json",
-    piprop: "thumbnail",
-    titles: speciesName,
-    pithumbsize: "500",
-    redirects: "",
-  });
-
-  const headers = new Headers();
-  headers.append(
-    "Api-User-Agent",
-    "bird-sightings/0.1 (christien.guy@gmail.com)",
-  );
-
-  const response = await fetch(`${url}?${params.toString()}`, {
-    headers,
-    next: {
-      revalidate: 60 * 60 * 24, // 24 hours,
-    },
-  });
-
-  return response.json();
-}
 async function BirdCard({ sighting }: { sighting: Sighting }) {
   const birdImage = await getBirdImage(sighting.sciName);
   const observationDate = new Date(sighting.obsDt);

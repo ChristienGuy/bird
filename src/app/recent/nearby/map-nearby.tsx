@@ -1,5 +1,7 @@
 "use client";
 import {
+  BirdImageResponse,
+  getBirdImage,
   getNearbySightings,
   NearbySightingsGetResponse,
   Sighting,
@@ -15,6 +17,7 @@ import {
   deterministicallyDistributeLatLng,
   getHaversineDistance,
 } from "./nearby-map-util";
+import Image from "next/image";
 
 function BirdCard({
   onClick,
@@ -26,6 +29,20 @@ function BirdCard({
   isSelected: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [birdImage, setBirdImage] = useState<BirdImageResponse>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const fetchBirdImage = async () => {
+      const image = await getBirdImage(sighting.sciName);
+      setBirdImage(image);
+      setIsLoading(false);
+    };
+
+    fetchBirdImage();
+  }, [sighting.sciName]);
 
   // FIXME: this has a bug where, if the user clicks the same sighting twice,
   // the scrollIntoView will not work. This is because the `isSelected` prop
@@ -44,14 +61,35 @@ function BirdCard({
     <Card
       ref={cardRef}
       onClick={onClick}
-      className={cn("h-full whitespace-nowrap p-4", {
+      className={cn("h-full min-w-64 whitespace-nowrap p-4", {
         "border-2 border-orange-400": isSelected,
       })}
     >
-      <div className="text-base font-bold">{sighting.comName}</div>
+      <div className="space-between flex flex-row items-center justify-between gap-2">
+        <div className="text-base font-bold">{sighting.comName}</div>
+        {isLoading ? (
+          <div className="h-8 w-8 animate-pulse rounded-sm bg-gray-300" />
+        ) : birdImage ? (
+          <Image
+            className="h-8 w-8 rounded-sm object-cover"
+            src={
+              birdImage.query.pages[Object.keys(birdImage.query.pages)[0]]
+                ?.thumbnail?.source
+            }
+            alt={sighting.comName}
+            width={64}
+            height={64}
+          />
+        ) : (
+          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-300">
+            <p className="m-0 p-0 text-center text-lg">🐦</p>
+          </div>
+        )}
+      </div>
       <div className="text-sm font-light text-gray-500">{sighting.sciName}</div>
+
       <div className="text-orange-300">
-        {sighting.lat}, {sighting.lng}
+        {sighting.lat.toFixed(5)}, {sighting.lng.toFixed(5)}
       </div>
     </Card>
   );

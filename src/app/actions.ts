@@ -142,3 +142,58 @@ export async function getNearbySightings({
 
   return json;
 }
+
+/*
+ * NEARBY AND RECENT SIGHTINGS ACTIONS
+ */
+export type BirdImageResponse = {
+  query: {
+    pages: {
+      [key: string]: {
+        pageid: number;
+        ns: number;
+        title: string;
+        thumbnail: {
+          source: string;
+          width: number;
+          height: number;
+        };
+        pageprops: {
+          displaytitle: string;
+          defaultsort: string;
+        };
+      };
+    };
+  };
+};
+
+export async function getBirdImage(
+  speciesName: string,
+): Promise<BirdImageResponse> {
+  const url = `https://en.wikipedia.org/w/api.php`;
+
+  const params = new URLSearchParams({
+    action: "query",
+    prop: "pageimages|pageprops",
+    format: "json",
+    piprop: "thumbnail",
+    titles: speciesName,
+    pithumbsize: "500",
+    redirects: "",
+  });
+
+  const headers = new Headers();
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
+  );
+
+  const response = await fetch(`${url}?${params.toString()}`, {
+    headers,
+    next: {
+      revalidate: 60 * 60 * 24, // 24 hours,
+    },
+  });
+
+  return response.json();
+}

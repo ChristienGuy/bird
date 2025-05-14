@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <>
       <h1 className="mb-12 text-4xl">
-        Recent bird sightings by location{" "}
+        Recent bird sightings by Region{" "}
         <span role="img" aria-label="bird">
           🐦
         </span>

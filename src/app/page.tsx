@@ -28,7 +28,7 @@ export default async function Home() {
           <StyledLink href="/recent/nearby">See nearby sightings</StyledLink>
         </LinkListItem>
         <LinkListItem>
-          <StyledLink href="/recent/region">Search by Location</StyledLink>
+          <StyledLink href="/recent/region">Search by Region</StyledLink>
         </LinkListItem>
       </ul>
     </div>
