@@ -54,8 +54,6 @@ function BirdCard({
   isSelected: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [birdImageResponse, setBirdImageResponse] =
-    useState<BirdImageResponse>();
   const [birdImage, setBirdImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -63,12 +61,11 @@ function BirdCard({
     setIsLoading(true);
 
     const fetchBirdImage = async () => {
-      const wikiResponse = await getBirdImage(sighting.sciName);
+      const response = await getBirdImage(sighting.sciName);
       const image =
-        wikiResponse.query.pages[Object.keys(wikiResponse.query.pages)[0]]
-          .thumbnail.source;
+        response.query.pages[Object.keys(response.query.pages)[0]].thumbnail
+          .source;
       setBirdImage(image);
-      setBirdImageResponse(wikiResponse);
       setIsLoading(false);
     };
 
