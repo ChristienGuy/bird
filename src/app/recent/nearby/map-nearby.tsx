@@ -1,6 +1,5 @@
 "use client";
 import {
-  BirdImageResponse,
   getBirdImage,
   getNearbySightings,
   NearbySightingsGetResponse,
