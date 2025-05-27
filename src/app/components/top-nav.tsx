@@ -75,9 +75,12 @@ function MobileNav() {
 
 export function TopNav() {
   return (
-    <div className="sticky top-0 z-10 flex flex-col bg-white">
-      <div className="flex flex-row p-2">
+    <div className="sticky top-0 z-10 flex flex-col bg-[#eee8e4]">
+      <div className="flex flex-row items-center justify-between p-2">
         <MobileNav />
+        <h1 className="text-chart-1 text-2xl">bird</h1>
+        {/* A little cheat here to centre the heading in the nav bar */}
+        <h1 className="opacity-0">bird</h1>
       </div>
       <Separator />
     </div>

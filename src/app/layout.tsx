@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} style={{ backgroundColor: "#eee8e4" }}>
         <main>
           <div className="grid min-h-dvh grid-rows-[auto_1fr]">
             <TopNav />
