@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import { MapIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/16/solid";
 import Link, { LinkProps } from "next/link";
 
 function LinkListItem({ children }: { children: React.ReactNode }) {
@@ -9,26 +8,57 @@ function LinkListItem({ children }: { children: React.ReactNode }) {
 function StyledLink({
   href,
   children,
-}: LinkProps & { children: React.ReactNode }) {
+  description,
+  backgroundColor,
+  icon,
+}: LinkProps & { children: React.ReactNode } & {
+  description: string;
+  backgroundColor: string;
+  icon: React.ReactNode;
+}) {
   return (
-    <Button asChild className="flex w-full items-center p-6">
-      <Link href={href}>
-        {children}
-        <ChevronRightIcon className="ml-auto h-6 w-6" />
+    <div
+      className={`flex h-24 w-full p-4 ${backgroundColor} rounded-lg text-white`}
+    >
+      <Link
+        href={href}
+        className="flex h-full w-full flex-row items-start justify-between"
+      >
+        <div className="flex h-full min-w-0 flex-1 flex-col pr-4 text-left lg:gap-2">
+          <h2 className="text-lg font-bold">{children}</h2>
+          <p className="break-words text-xs">{description}</p>
+        </div>
+        <div className="ml-6 flex h-full flex-shrink-0 items-center">
+          {icon}
+        </div>
       </Link>
-    </Button>
+    </div>
   );
 }
 
 export default async function Home() {
   return (
-    <div className="flex flex-col items-center">
-      <ul className="flex w-full max-w-[80%] flex-col gap-3">
+    <div className="mt-6 flex flex-col items-center">
+      <ul className="flex w-full max-w-[80%] flex-col gap-6">
         <LinkListItem>
-          <StyledLink href="/recent/nearby">See nearby sightings</StyledLink>
+          <StyledLink
+            href="/recent/nearby"
+            description="Map view of bird sightings wherever you want to look"
+            backgroundColor="bg-primary"
+            icon={<MapIcon className="h-full w-full" />}
+          >
+            Nearby Birds
+          </StyledLink>
         </LinkListItem>
         <LinkListItem>
-          <StyledLink href="/recent/region">Search by Region</StyledLink>
+          <StyledLink
+            href="/recent/region"
+            description="Search bird sightings in a specific city, town, or state"
+            backgroundColor="bg-secondary"
+            icon={<MagnifyingGlassCircleIcon className="h-full w-full" />}
+          >
+            Region Search
+          </StyledLink>
         </LinkListItem>
       </ul>
     </div>
