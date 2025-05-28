@@ -144,7 +144,7 @@ export async function getNearbySightings({
 }
 
 /*
- * NEARBY AND RECENT SIGHTINGS ACTIONS
+ * WIKIPEDIA FETCH
  */
 export type BirdImageResponse = {
   query: {

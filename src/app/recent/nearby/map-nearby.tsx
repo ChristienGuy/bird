@@ -1,6 +1,5 @@
 "use client";
 import {
-  BirdImageResponse,
   getBirdImage,
   getNearbySightings,
   NearbySightingsGetResponse,
@@ -19,6 +18,31 @@ import {
 } from "./nearby-map-util";
 import Image from "next/image";
 
+function Thumbnail({
+  source,
+  altText,
+}: {
+  source: string | null;
+  altText: string;
+}) {
+  if (!source) {
+    return (
+      <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-300">
+        <p className="m-0 p-0 text-center text-lg">🐦</p>
+      </div>
+    );
+  }
+  return (
+    <Image
+      className="h-8 w-8 rounded-sm object-cover"
+      src={source}
+      alt={altText}
+      width={64}
+      height={64}
+    />
+  );
+}
+
 function BirdCard({
   onClick,
   sighting,
@@ -29,14 +53,17 @@ function BirdCard({
   isSelected: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [birdImage, setBirdImage] = useState<BirdImageResponse>();
+  const [birdImage, setBirdImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
 
     const fetchBirdImage = async () => {
-      const image = await getBirdImage(sighting.sciName);
+      const response = await getBirdImage(sighting.sciName);
+      const image =
+        response.query.pages[Object.keys(response.query.pages)[0]].thumbnail
+          .source;
       setBirdImage(image);
       setIsLoading(false);
     };
@@ -69,21 +96,8 @@ function BirdCard({
         <div className="text-base font-bold">{sighting.comName}</div>
         {isLoading ? (
           <div className="h-8 w-8 animate-pulse rounded-sm bg-gray-300" />
-        ) : birdImage ? (
-          <Image
-            className="h-8 w-8 rounded-sm object-cover"
-            src={
-              birdImage.query.pages[Object.keys(birdImage.query.pages)[0]]
-                ?.thumbnail?.source
-            }
-            alt={sighting.comName}
-            width={64}
-            height={64}
-          />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-300">
-            <p className="m-0 p-0 text-center text-lg">🐦</p>
-          </div>
+          <Thumbnail source={birdImage} altText={sighting.comName} />
         )}
       </div>
       <div className="text-sm font-light text-gray-500">{sighting.sciName}</div>
