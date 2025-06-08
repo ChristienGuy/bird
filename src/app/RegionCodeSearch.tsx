@@ -63,7 +63,7 @@ export function RegionCodeSearch() {
         }}
       >
         <ComboboxInput<Region>
-          className="w-full rounded-lg border-gray-400 p-3"
+          className="w-screen rounded-lg border-gray-400 p-3"
           aria-label="Location search"
           onChange={(event) => {
             debouncedHandleSearch(event.target.value);
