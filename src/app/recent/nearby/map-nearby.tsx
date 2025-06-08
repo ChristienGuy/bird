@@ -34,7 +34,7 @@ function Thumbnail({
   }
   return (
     <Image
-      className="h-8 w-8 rounded-sm object-cover"
+      className="h-8 max-w-8 rounded-sm object-cover"
       src={source}
       alt={altText}
       width={64}
