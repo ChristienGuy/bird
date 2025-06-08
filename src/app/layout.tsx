@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { TopNav } from "./components/top-nav";
-import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(`bg-orange-50`, inter.className)}>
+      <body className={inter.className} style={{ backgroundColor: "#eee8e4" }}>
         <main>
           <div className="grid min-h-dvh grid-rows-[auto_1fr]">
             <TopNav />
