@@ -1,40 +1,37 @@
 import { MapIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/16/solid";
 import Link, { LinkProps } from "next/link";
 
-function LinkCard({
+function LinkListItem({ children }: { children: React.ReactNode }) {
+  return <li className="flex w-full">{children}</li>;
+}
+
+function StyledLink({
   href,
   children,
-  backgroundColour,
-}: LinkProps & {
-  children: React.ReactNode;
-  backgroundColour: string;
+  description,
+  backgroundColor,
+  icon,
+}: LinkProps & { children: React.ReactNode } & {
+  description: string;
+  backgroundColor: string;
+  icon: React.ReactNode;
 }) {
   return (
-    <li className={`flex w-full`}>
+    <div
+      className={`flex h-24 w-full p-4 ${backgroundColor} rounded-lg text-white`}
+    >
       <Link
         href={href}
-        className={`flex h-full w-full justify-between p-4 ${backgroundColour} rounded-lg text-white`}
+        className="flex h-full w-full flex-row items-start justify-between"
       >
-        {children}
+        <div className="flex h-full min-w-0 flex-1 flex-col pr-4 text-left lg:gap-2">
+          <h2 className="text-lg font-bold">{children}</h2>
+          <p className="break-words text-xs">{description}</p>
+        </div>
+        <div className="ml-6 flex h-full flex-shrink-0 items-center">
+          {icon}
+        </div>
       </Link>
-    </li>
-  );
-}
-
-function LinkCardText({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col md:p-2">{children}</div>;
-}
-
-function LinkCardTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-lg font-bold md:text-2xl">{children}</h2>;
-}
-function LinkCardDescription({ children }: { children: React.ReactNode }) {
-  return <p className="break-words text-xs md:text-base">{children}</p>;
-}
-function LinkCardIcon({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="ml-6 flex h-full flex-shrink-0 items-center">
-      {children}
     </div>
   );
 }
@@ -43,28 +40,26 @@ export default async function Home() {
   return (
     <div className="mt-6 flex flex-col items-center">
       <ul className="flex w-full max-w-[80%] flex-col gap-6">
-        <LinkCard backgroundColour="bg-primary" href="/recent/nearby">
-          <LinkCardText>
-            <LinkCardTitle>Nearby Birds</LinkCardTitle>
-            <LinkCardDescription>
-              Map view of bird sightings wherever you want to look
-            </LinkCardDescription>
-          </LinkCardText>
-          <LinkCardIcon>
-            <MapIcon className="h-16 md:h-24" />
-          </LinkCardIcon>
-        </LinkCard>
-        <LinkCard backgroundColour="bg-secondary" href="/recent/region">
-          <LinkCardText>
-            <LinkCardTitle>Region Search</LinkCardTitle>
-            <LinkCardDescription>
-              Search bird sightings in a specific city, town, or state
-            </LinkCardDescription>
-          </LinkCardText>
-          <LinkCardIcon>
-            <MagnifyingGlassCircleIcon className="h-16 md:h-24" />
-          </LinkCardIcon>
-        </LinkCard>
+        <LinkListItem>
+          <StyledLink
+            href="/recent/nearby"
+            description="Map view of bird sightings wherever you want to look"
+            backgroundColor="bg-primary"
+            icon={<MapIcon className="h-full w-full" />}
+          >
+            Nearby Birds
+          </StyledLink>
+        </LinkListItem>
+        <LinkListItem>
+          <StyledLink
+            href="/recent/region"
+            description="Search bird sightings in a specific city, town, or state"
+            backgroundColor="bg-secondary"
+            icon={<MagnifyingGlassCircleIcon className="h-full w-full" />}
+          >
+            Region Search
+          </StyledLink>
+        </LinkListItem>
       </ul>
     </div>
   );
