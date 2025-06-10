@@ -195,7 +195,7 @@ export async function getNearbyHotspots(latitude: number, longitude: number) {
 /**
  * GET RECENT NOTABLE OBSERVATION
  */
-type NotableObservation = {
+export type NotableObservation = {
   speciesCode: string;
   comName: string;
   sciName: string;
