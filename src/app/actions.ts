@@ -301,7 +301,7 @@ export type BirdImageResponse = {
 export async function getBirdImage(
   speciesName: string,
 ): Promise<BirdImageResponse> {
-  const url = `https://en.wikipedia.org/w/api.php`;
+  const wikiUrl = `https://en.wikipedia.org/w/api.php`;
 
   const params = new URLSearchParams({
     action: "query",
@@ -319,7 +319,7 @@ export async function getBirdImage(
     "bird-sightings/0.1 (christien.guy@gmail.com)",
   );
 
-  const response = await fetch(`${url}?${params.toString()}`, {
+  const response = await fetch(`${wikiUrl}?${params.toString()}`, {
     headers,
     next: {
       revalidate: 60 * 60 * 24, // 24 hours,
