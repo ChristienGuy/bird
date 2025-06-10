@@ -4,6 +4,7 @@ import speciesData from "@/species.json";
 import flattenedRegionCodes from "@/flattenedRegionCodes.json";
 import Fuse from "fuse.js";
 import { EBIRD_BASE_API_URL } from "@/constants";
+import { getRandomArbitrary } from "@/lib/utils";
 
 /*
  * REGION ACTIONS
@@ -144,6 +145,136 @@ export async function getNearbySightings({
 }
 
 /*
+ * NEARBY HOTSPOTS
+ */
+type Hotspot = {
+  locId: string;
+  locName: string;
+  countryCode: string;
+  subnational1Code: string;
+  subnational2Code: string;
+  lat: number;
+  lng: number;
+  latestObsDt: string;
+  numSpeciesAllTime: number;
+};
+export async function getNearbyHotspots(latitude: number, longitude: number) {
+  if (!process.env.EBIRD_API_TOKEN) {
+    throw new Error("Missing eBird API token");
+  }
+
+  const url = `${EBIRD_BASE_API_URL}/ref/hotspot/geo`;
+
+  const searchParams = new URLSearchParams({
+    lat: latitude.toFixed(2),
+    lng: longitude.toFixed(2),
+    fmt: "json",
+    back: "4", // Hotspots visited up to this many days ago
+  });
+
+  const headers = new Headers();
+  headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
+  );
+
+  const response = await fetch(`${url}?${searchParams.toString()}`, {
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch nearby hotspots: ${response.statusText}`);
+  }
+
+  const json: Hotspot[] = await response.json();
+
+  return json;
+}
+
+/**
+ * GET RECENT NOTABLE OBSERVATION
+ */
+type NotableObservation = {
+  speciesCode: string;
+  comName: string;
+  sciName: string;
+  locId: string;
+  locName: string;
+  obsDt: string;
+  howMany: number;
+  lat: number;
+  lng: number;
+  obsValid: boolean;
+  obsReviewed: boolean;
+  locationPrivate: boolean;
+  subId: string;
+  exoticCategory: string;
+  subnational2Code: string;
+  subnational2Name: string;
+  subnational1Code: string;
+  subnational1Name: string;
+  countryCode: string;
+  countryName: string;
+  userDisplayName: string;
+  obsId: string;
+  checklistId: string;
+  presenceNoted: boolean;
+  hasComments: boolean;
+  evidence: string;
+  hasRichMedia: true;
+  firstName: string;
+  lastName: string;
+};
+export async function getRecentNotableObservation(regionCode: string) {
+  if (!process.env.EBIRD_API_TOKEN) {
+    throw new Error("Missing eBird API token");
+  }
+
+  const url = `${EBIRD_BASE_API_URL}/data/obs/${regionCode}/recent/notable`;
+
+  const searchParams = new URLSearchParams({
+    detail: "full",
+    back: "4", // Hotspots visited up to this many days ago
+    hotspot: "true",
+    maxResults: "10",
+  });
+
+  const headers = new Headers();
+  headers.append("X-eBirdApiToken", process.env.EBIRD_API_TOKEN);
+  headers.append(
+    "Api-User-Agent",
+    "bird-sightings/0.1 (christien.guy@gmail.com)",
+  );
+
+  const response = await fetch(`${url}?${searchParams.toString()}`, {
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch nearby hotspots: ${response.statusText}`);
+  }
+  const json: NotableObservation[] = await response.json();
+
+  return json;
+}
+
+// Combines the utility of the getNearbyHotspots & getRecentNotableObservations functions
+// Returns the recent notable observations based on the coordinates supplied to find nearby hotspots
+export const getRecentNearbyNotableBird = async (
+  latitude: number,
+  longitude: number,
+) => {
+  const nearbyHotspots = await getNearbyHotspots(latitude, longitude);
+  const randomHotspot =
+    nearbyHotspots[getRandomArbitrary(0, nearbyHotspots.length)];
+  const recentNotableObservations = await getRecentNotableObservation(
+    randomHotspot.subnational2Code,
+  );
+  return recentNotableObservations;
+};
+
+/**
  * WIKIPEDIA FETCH
  */
 export type BirdImageResponse = {
