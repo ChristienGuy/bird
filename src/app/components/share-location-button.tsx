@@ -2,7 +2,7 @@
 
 import { useCoordinates } from "../contexts/user-coordinates-provider";
 
-type Coords = {
+export type Coords = {
   accuracy: number;
   altitude: number | null;
   altitudeAccuracy: number | null;
@@ -11,7 +11,7 @@ type Coords = {
   longitude: number;
   speed: number | null;
 };
-type GeolocationPosition = {
+export type GeolocationPosition = {
   coords: Coords;
   timestamp: number;
 };

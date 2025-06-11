@@ -17,6 +17,9 @@ import {
   getHaversineDistance,
 } from "./nearby-map-util";
 import Image from "next/image";
+import mapboxgl from "mapbox-gl";
+import { GeolocationPosition } from "@/app/components/share-location-button";
+import { useCoordinates } from "@/app/contexts/user-coordinates-provider";
 
 function Thumbnail({
   source,
@@ -119,6 +122,7 @@ export function MapNearby({
     longitude: initialSightings[0].lng,
     zoom: 10,
   });
+  const { setUserCoordinates } = useCoordinates();
 
   const mapRef = useRef<MapRef>(null);
 
@@ -189,6 +193,11 @@ export function MapNearby({
     });
   };
 
+  const handleGeolocate = (position: GeolocationPosition) => {
+    const { latitude, longitude } = position.coords;
+    setUserCoordinates({ latitude, longitude });
+  };
+
   return (
     <div className="relative h-full">
       <Map
@@ -208,7 +217,7 @@ export function MapNearby({
           width: "100%",
         }}
       >
-        <GeolocateControl />
+        <GeolocateControl onGeolocate={handleGeolocate} />
         {/* TODO: memoise these markers if we get a performance hit */}
         {nearbySightings?.map((sighting) => (
           <Marker
