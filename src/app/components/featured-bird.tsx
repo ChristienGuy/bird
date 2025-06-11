@@ -16,9 +16,13 @@ export function FeaturedBirdOverlayText({
   randomNotableBird: NotableObservation;
 }) {
   return (
-    <div className="relative left-4 -mb-16 w-fit rounded-lg bg-gray-700 bg-opacity-40 px-4 py-2 text-xs text-white drop-shadow-lg md:top-4 md:text-base">
-      <h4 className="">{randomNotableBird.comName}</h4>
+    <div className="relative left-4 top-4 -mb-16 w-fit rounded-lg bg-gray-700 bg-opacity-40 px-4 py-2 text-xs text-white drop-shadow-lg md:top-6 md:-mb-20 md:text-base">
+      <h4 className="font-bold">{randomNotableBird.comName}</h4>
       <p className="italic">{randomNotableBird.sciName}</p>
+      <p>
+        {randomNotableBird.howMany} spotted in{" "}
+        {randomNotableBird.subnational2Name}
+      </p>
     </div>
   );
 }
