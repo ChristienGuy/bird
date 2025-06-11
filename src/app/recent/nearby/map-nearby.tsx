@@ -17,6 +17,8 @@ import {
   getHaversineDistance,
 } from "./nearby-map-util";
 import Image from "next/image";
+import { GeolocationPosition } from "@/app/components/share-location-button";
+import { useCoordinates } from "@/app/contexts/user-coordinates-provider";
 
 function Thumbnail({
   source,
@@ -34,7 +36,7 @@ function Thumbnail({
   }
   return (
     <Image
-      className="h-8 w-8 rounded-sm object-cover"
+      className="h-8 max-w-8 rounded-sm object-cover"
       src={source}
       alt={altText}
       width={64}
@@ -119,6 +121,7 @@ export function MapNearby({
     longitude: initialSightings[0].lng,
     zoom: 10,
   });
+  const { setUserCoordinates } = useCoordinates();
 
   const mapRef = useRef<MapRef>(null);
 
@@ -189,6 +192,11 @@ export function MapNearby({
     });
   };
 
+  const handleGeolocate = (position: GeolocationPosition) => {
+    const { latitude, longitude } = position.coords;
+    setUserCoordinates({ latitude, longitude });
+  };
+
   return (
     <div className="relative h-full">
       <Map
@@ -208,7 +216,7 @@ export function MapNearby({
           width: "100%",
         }}
       >
-        <GeolocateControl />
+        <GeolocateControl onGeolocate={handleGeolocate} />
         {/* TODO: memoise these markers if we get a performance hit */}
         {nearbySightings?.map((sighting) => (
           <Marker
