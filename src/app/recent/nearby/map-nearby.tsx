@@ -17,7 +17,6 @@ import {
   getHaversineDistance,
 } from "./nearby-map-util";
 import Image from "next/image";
-import mapboxgl from "mapbox-gl";
 import { GeolocationPosition } from "@/app/components/share-location-button";
 import { useCoordinates } from "@/app/contexts/user-coordinates-provider";
 
