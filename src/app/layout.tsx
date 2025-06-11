@@ -4,6 +4,7 @@ import "./globals.css";
 import { TopNav } from "./components/top-nav";
 import { cn } from "@/lib/utils";
 import { UserCoordinatesProvider } from "./contexts/user-coordinates-provider";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const coordsCookie = cookieStore.get("userCoordinates");
+  const initialCoordinates = coordsCookie
+    ? JSON.parse(coordsCookie.value)
+    : undefined;
+
   return (
     <html lang="en">
       <body className={cn(`bg-orange-50`, inter.className)}>
-        <UserCoordinatesProvider>
+        <UserCoordinatesProvider initialCoordinates={initialCoordinates}>
           <main>
             <div className="grid min-h-dvh grid-rows-[auto_1fr]">
               <TopNav />
