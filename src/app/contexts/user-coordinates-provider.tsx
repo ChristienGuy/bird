@@ -61,6 +61,10 @@ function UserCoordinatesProvider({
         try {
           const parsed = JSON.parse(savedCoordinates);
           setUserCoordinates(parsed);
+          console.log(
+            "Location coordinates from cookies successfully retrieved:",
+            parsed,
+          );
         } catch (error) {
           console.log("Failed to parse saved coordinates:", error);
         }
@@ -72,6 +76,10 @@ function UserCoordinatesProvider({
   useEffect(() => {
     if (userCoordinates.latitude !== 0 || userCoordinates.longitude !== 0) {
       setCookie(COOKIE_NAME, JSON.stringify(userCoordinates));
+      console.log(
+        "Location coordinates saved to cookies successfully:",
+        userCoordinates,
+      );
     }
   }, [userCoordinates]);
 
