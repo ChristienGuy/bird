@@ -1,13 +1,7 @@
 import { MapIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/16/solid";
 import Link, { LinkProps } from "next/link";
-import {
-  getBirdImage,
-  BirdImageResponse,
-  getRecentNearbyNotableBird,
-  NotableObservation,
-} from "./actions";
-import Image from "next/image";
-import { birdImageUrlHelper, getRandomArbitrary } from "@/lib/utils";
+import { ShareLocationButton } from "./components/share-location-button";
+import { FeaturedBird } from "./components/featured-bird";
 
 function LinkCard({
   href,
@@ -47,47 +41,7 @@ function LinkCardIcon({ children }: { children: React.ReactNode }) {
   );
 }
 
-function FeaturedBirdOverlayText({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative left-4 top-4 -mb-16 w-fit rounded-lg bg-gray-700 bg-opacity-40 px-4 py-2 text-white drop-shadow-lg">
-      {children}
-    </div>
-  );
-}
-
-async function FeaturedBird({
-  children,
-  randomNotableBird,
-}: {
-  children: React.ReactNode;
-  randomNotableBird: NotableObservation;
-}) {
-  const birdImageResponse = await getBirdImage(randomNotableBird.comName);
-  const birdImage = birdImageUrlHelper(birdImageResponse);
-  console.log(birdImage);
-
-  return (
-    <div className="transition-all hover:opacity-80">
-      {children}
-      <Image
-        className="h-96 w-full rounded-xl object-cover shadow-2xl transition-all hover:cursor-pointer"
-        src={birdImage}
-        alt="featured bird"
-        width={500}
-        height={500}
-      />
-    </div>
-  );
-}
-
 export default async function Home() {
-  const nearbyNotableBirds = await getRecentNearbyNotableBird(
-    53.185335,
-    -1.688074,
-  );
-  const randomNotableBird =
-    nearbyNotableBirds[getRandomArbitrary(0, nearbyNotableBirds.length)];
-
   return (
     <div className="mx-auto mt-6 flex max-w-[80%] flex-col items-center">
       <ul className="flex w-full flex-col gap-6">
@@ -120,13 +74,15 @@ export default async function Home() {
 
       <section className="mt-8 grid h-full w-full grid-cols-2 pb-20">
         {/* Featured Bird Card */}
-        <FeaturedBird randomNotableBird={randomNotableBird}>
-          <FeaturedBirdOverlayText>
-            <h4 className="">{randomNotableBird.comName}</h4>
-            <p className="italic">{randomNotableBird.sciName}</p>
-          </FeaturedBirdOverlayText>
-        </FeaturedBird>
+        <div className="col-span-2 md:col-span-1">
+          <FeaturedBird />
+        </div>
+
         {/* right half */}
+        <div className="col-span-2 col-start-2 md:col-span-1"></div>
+        <div className="col-span-2 hover:cursor-pointer">
+          <ShareLocationButton />
+        </div>
       </section>
     </div>
   );

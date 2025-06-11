@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { TopNav } from "./components/top-nav";
 import { cn } from "@/lib/utils";
+import { UserCoordinatesProvider } from "./contexts/user-coordinates-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,12 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(`bg-orange-50`, inter.className)}>
-        <main>
-          <div className="grid min-h-dvh grid-rows-[auto_1fr]">
-            <TopNav />
-            <div>{children}</div>
-          </div>
-        </main>
+        <UserCoordinatesProvider>
+          <main>
+            <div className="grid min-h-dvh grid-rows-[auto_1fr]">
+              <TopNav />
+              <div>{children}</div>
+            </div>
+          </main>
+        </UserCoordinatesProvider>
       </body>
     </html>
   );
